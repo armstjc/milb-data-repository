@@ -41,27 +41,25 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
         try:
             os.mkdir(f"{home_dir}/.milb/")
         except:
-            print(f"Cached directory already exists.")
+            pass
 
         try:
             os.mkdir(f"{home_dir}/.milb/pbp/")
             os.mkdir(f"{home_dir}/.milb/lineups/")
         except:
-            print(
-                f"Additional cached directories have been previously created and located.")
+            pass
 
     elif cache_data == True and (cache_dir != "" or cache_dir != None):
         try:
             os.mkdir(f"{cache_dir}/.milb/")
         except:
-            print(f"Cached directory already exists.")
+            pass
 
         try:
             os.mkdir(f"{cache_dir}/.milb/pbp/")
             os.mkdir(f"{cache_dir}/.milb/lineups/")
         except:
-            print(
-                f"Additional cached directories have been previously created and located.")
+            pass
 
     game_df = pd.DataFrame()
     play_df = pd.DataFrame()
@@ -98,7 +96,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
             del json_string
         except:
             response = urlopen(lineups_url)
-            time.sleep(2)
+            time.sleep(1)
 
             if response.code == 200:
                 pass
@@ -123,7 +121,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
             del json_string
         except:
             response = urlopen(lineups_url)
-            time.sleep(2)
+            time.sleep(1)
 
             if response.code == 200:
                 pass
@@ -141,7 +139,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     else:
         # No cached files used.
         response = urlopen(lineups_url)
-        time.sleep(2)
+        time.sleep(1)
 
         if response.code == 200:
             pass
@@ -223,7 +221,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
             json_data = json.loads(json_string)
         except:
             response = urlopen(game_url)
-            time.sleep(2)
+            time.sleep(1)
 
             if response.code == 200:
                 pass
@@ -246,7 +244,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
             json_data = json.loads(json_string)
         except:
             response = urlopen(game_url)
-            time.sleep(2)
+            time.sleep(1)
 
             if response.code == 200:
                 pass
@@ -264,7 +262,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     else:
         # No cached files used.
         response = urlopen(game_url)
-        time.sleep(2)
+        time.sleep(1)
 
         if response.code == 200:
             pass
@@ -308,7 +306,10 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
         pitcher_id = i['matchup']['pitcher']['id']
         pitcher_hand = i['matchup']['pitchHand']['code']
         event = i['result']['event']
-        sequence_description = i['result']['description']
+        try:
+            sequence_description = i['result']['description']
+        except:
+            sequence_description = None
 
         inning = i['about']['inning']
         top_bot = i['about']['halfInning']
@@ -338,10 +339,17 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
             raise ValueError(f'Unhanlded inning state:\n\t{top_bot}')
 
         for j in i['playEvents']:
-            play_start_datetime = datetime.strptime(
-                j['startTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
-            play_end_datetime = datetime.strptime(
-                j['endTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            try:
+                play_start_datetime = datetime.strptime(
+                    j['startTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            except:
+                play_start_datetime = None
+
+            try:
+                play_end_datetime = datetime.strptime(
+                    j['endTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            except:
+                play_end_datetime = None
 
             is_pitch = j['isPitch']
 
@@ -375,27 +383,39 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
             elif event_type == "defensive_substitution" and top_bot == "Top":
                 subbed_position = int(j['position']['code'])
-                new_player_id = j['player']['id']
-                home_fielders[(subbed_position-1)] = new_player_id
-                del new_player_id, subbed_position
+                if subbed_position == 10:
+                    pass
+                else:
+                    new_player_id = j['player']['id']
+                    home_fielders[(subbed_position-1)] = new_player_id
+                    del new_player_id, subbed_position
 
             elif event_type == "defensive_substitution" and top_bot == "Bot":
                 subbed_position = int(j['position']['code'])
-                new_player_id = j['player']['id']
-                away_fielders[(subbed_position-1)] = new_player_id
-                del new_player_id, subbed_position
+                if subbed_position == 10:
+                    pass
+                else:
+                    new_player_id = j['player']['id']
+                    away_fielders[(subbed_position-1)] = new_player_id
+                    del new_player_id, subbed_position
 
             elif event_type == "defensive_switch" and top_bot == "Top":
                 subbed_position = int(j['position']['code'])
-                new_player_id = j['player']['id']
-                home_fielders[(subbed_position-1)] = new_player_id
-                del new_player_id, subbed_position
+                if subbed_position == 10:
+                    pass
+                else:
+                    new_player_id = j['player']['id']
+                    home_fielders[(subbed_position-1)] = new_player_id
+                    del new_player_id, subbed_position
 
             elif event_type == "defensive_switch" and top_bot == "Bot":
                 subbed_position = int(j['position']['code'])
-                new_player_id = j['player']['id']
-                away_fielders[(subbed_position-1)] = new_player_id
-                del new_player_id, subbed_position
+                if subbed_position == 10:
+                    pass
+                else:
+                    new_player_id = j['player']['id']
+                    away_fielders[(subbed_position-1)] = new_player_id
+                    del new_player_id, subbed_position
 
             elif event_type == "offensive_substitution" and top_bot == "Top":
                 batter_id = j['player']['id']
@@ -483,28 +503,90 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                 except:
                     pitch_name = None
 
-                release_speed = j['pitchData']['startSpeed']
-                release_pos_x = j['pitchData']['coordinates']['x0']
-                release_pos_y = j['pitchData']['coordinates']['y0']
-                release_pos_z = j['pitchData']['coordinates']['z0']
+                try:
+                    release_speed = j['pitchData']['startSpeed']
+                except:
+                    release_speed = None
 
-                plate_x = j['pitchData']['coordinates']['pX']
-                plate_z = j['pitchData']['coordinates']['pZ']
+                try:
+                    release_pos_x = j['pitchData']['coordinates']['x0']
+                except:
+                    release_pos_x = None
 
-                pitch_pfx_x = j['pitchData']['coordinates']['pfxX']
-                pitch_pfx_z = j['pitchData']['coordinates']['pfxZ']
-                pitch_spin_dir = j['pitchData']['breaks']['spinDirection']
-                pitch_zone = j['pitchData']['zone']
+                try:
+                    release_pos_y = j['pitchData']['coordinates']['y0']
+                except:
+                    release_pos_y = None
 
-                pitch_vx0 = j['pitchData']['coordinates']['vX0']
-                pitch_vy0 = j['pitchData']['coordinates']['vY0']
-                pitch_vz0 = j['pitchData']['coordinates']['vZ0']
+                try:
+                    release_pos_z = j['pitchData']['coordinates']['z0']
+                except:
+                    release_pos_z = None
 
-                pitch_ax = j['pitchData']['coordinates']['aX']
-                pitch_ay = j['pitchData']['coordinates']['aY']
-                pitch_az = j['pitchData']['coordinates']['aZ']
+                try:
+                    plate_x = j['pitchData']['coordinates']['pX']
+                except:
+                    plate_x = None
 
-                pitch_spin_rate = j['pitchData']['breaks']['spinRate']
+                try:
+                    plate_z = j['pitchData']['coordinates']['pZ']
+                except:
+                    plate_z = None
+
+                try:
+                    pitch_pfx_x = j['pitchData']['coordinates']['pfxX']
+                except:
+                    pitch_pfx_x = None
+
+                try:
+                    pitch_pfx_z = j['pitchData']['coordinates']['pfxZ']
+                except:
+                    pitch_pfx_z = None
+
+                try:
+                    pitch_spin_dir = j['pitchData']['breaks']['spinDirection']
+                except:
+                    pitch_spin_dir = None
+
+                try:
+                    pitch_zone = j['pitchData']['zone']
+                except:
+                    pitch_zone = None
+
+                try:
+                    pitch_vx0 = j['pitchData']['coordinates']['vX0']
+                except:
+                    pitch_vx0 = None
+
+                try:
+                    pitch_vy0 = j['pitchData']['coordinates']['vY0']
+                except:
+                    pitch_vy0 = None
+
+                try:
+                    pitch_vz0 = j['pitchData']['coordinates']['vZ0']
+                except:
+                    pitch_vz0 = None
+
+                try:
+                    pitch_ax = j['pitchData']['coordinates']['aX']
+                except:
+                    pitch_ax = None
+
+                try:
+                    pitch_ay = j['pitchData']['coordinates']['aY']
+                except:
+                    pitch_ay = None
+
+                try:
+                    pitch_az = j['pitchData']['coordinates']['aZ']
+                except:
+                    pitch_az = None
+
+                try:
+                    pitch_spin_rate = j['pitchData']['breaks']['spinRate']
+                except:
+                    pitch_spin_rate = None
 
                 try:
                     pitch_extension = j['pitchData']['extension']
@@ -519,14 +601,40 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                 is_in_play = j['details']['isInPlay']
 
                 if is_in_play == True:
-                    hit_location = int(j['hitData']['location'])
-                    hit_trajectory = j['hitData']['trajectory']
-                    hit_distance = int(j['hitData']['totalDistance'])
-                    hit_launch_speed = j['hitData']['launchSpeed']
-                    hit_launch_angle = j['hitData']['launchAngle']
+                    try:
+                        hit_location = int(j['hitData']['location'])
+                    except:
+                        hit_location = None
 
-                    hit_x = j['hitData']['coordinates']['coordX']
-                    hit_y = j['hitData']['coordinates']['coordY']
+                    try:
+                        hit_trajectory = j['hitData']['trajectory']
+                    except:
+                        hit_trajectory = None
+
+                    try:
+                        hit_distance = int(j['hitData']['totalDistance'])
+                    except:
+                        hit_distance = None
+
+                    try:
+                        hit_launch_speed = j['hitData']['launchSpeed']
+                    except:
+                        hit_launch_speed = None
+
+                    try:
+                        hit_launch_angle = j['hitData']['launchAngle']
+                    except:
+                        hit_launch_angle = None
+
+                    try:
+                        hit_x = j['hitData']['coordinates']['coordX']
+                    except:
+                        hit_x = None
+
+                    try:
+                        hit_y = j['hitData']['coordinates']['coordY']
+                    except:
+                        hit_y = None
 
                 else:
                     hit_location = None
@@ -675,6 +783,48 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     return game_df
 
 
+def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, cache_dir="", save=True):
+    """
+
+    """
+
+    game_df = pd.DataFrame()
+    pbp_df = pd.DataFrame()
+    sched_df = pd.DataFrame()
+
+    if level.lower() == 'aaa':
+        sched_df = pd.read_csv(f'schedule/{season}_aaa_schedule.csv')
+    if level.lower() == 'aa':
+        sched_df = pd.read_csv(f'schedule/{season}_aa_schedule.csv')
+    if level.lower() == 'a':
+        sched_df = pd.read_csv(f'schedule/{season}_a_schedule.csv')
+    if level.lower() == 'rk' or level.lower() == 'rookie':
+        sched_df = pd.read_csv(f'schedule/{season}_rookie_schedule.csv')
+
+    sched_df = sched_df.loc[sched_df['status_abstract_game_state'] == 'Final']
+    sched_df = sched_df.loc[(sched_df['game_month'] == month) & (
+        sched_df['status_detailed_state'] != 'Cancelled') & (
+        sched_df['status_detailed_state'] != 'Postponed') & (
+        sched_df['status_detailed_state'] != 'In Progress') & (
+        sched_df['status_detailed_state'] != 'Scheduled')]
+
+    game_ids_arr = sched_df['game_pk'].to_numpy()
+
+    if len(game_ids_arr) > 30 and cache_data == False:
+        print('HEY!\nThat\'s a ton of data you want to access.\nPlease cache this data in the future to avoid severe data loss!')
+
+    for game_id in tqdm(game_ids_arr):
+        game_df = get_milb_game_pbp(
+            game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
+        pbp_df = pd.concat([pbp_df, game_df], ignore_index=True)
+
+    if save == True:
+        pbp_df.to_csv(
+            f'pbp/{season}_{month}_{level.lower()}_pbp.csv', index=False)
+    return pbp_df
+
+
 if __name__ == "__main__":
     print('starting up')
-    get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
+    # get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
+    get_month_milb_pbp(2023, 5, level="AA", cache_data=True, cache_dir='D:/')
