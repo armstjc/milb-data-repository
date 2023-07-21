@@ -197,12 +197,23 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
             day_night = i['dayNight']
             scheduled_innings = i['scheduledInnings']
             reverse_home_away_status = i['reverseHomeAwayStatus']
-            inning_break_length = i['inningBreakLength']
+
+            try:
+                inning_break_length = i['inningBreakLength']
+            except:
+                inning_break_length = None
 
             series_description = i['seriesDescription']
             record_source = i['recordSource']
-            if_necessary = i['ifNecessary']
-            if_necessary_description = i['ifNecessaryDescription']
+            try:
+                if_necessary = i['ifNecessary']
+            except:
+                if_necessary = None
+
+            try:
+                if_necessary_description = i['ifNecessaryDescription']
+            except:
+                if_necessary_description = None
 
             try:
                 game_description = i['description']
@@ -358,7 +369,7 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 if __name__ == "__main__":
 
-    for season in range(2010, 2019):
+    for season in range(2021, 2023):
         print(f'Getting Triple-A schedules.')
         aaa_df = get_milb_schedule(season, 'aaa')
         aaa_df.to_csv(f'schedule/{season}_aaa_schedule.csv', index=False)
