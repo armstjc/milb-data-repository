@@ -358,7 +358,7 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 if __name__ == "__main__":
 
-    for season in range(2019, 2020):
+    for season in range(2023, 2024):
         print(f'Getting Triple-A schedules.')
         aaa_df = get_milb_schedule(season, 'aaa')
         aaa_df.to_csv(f'schedule/{season}_aaa_schedule.csv', index=False)
