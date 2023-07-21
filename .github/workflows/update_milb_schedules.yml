@@ -53,5 +53,6 @@ jobs:
         with:
           file: "schedule/*.csv"
           release_id: ${{ steps.create_release.outputs.id }}
+          update_latest_release: true
           overwrite: true
           verbose: true
