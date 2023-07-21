@@ -42,7 +42,7 @@ jobs:
         with:
           file: "schedule/*.csv"
           branches: "main"
-          update_latest_release: true
+          #update_latest_release: true
           overwrite: true
           verbose: true
           default_release_name: "Schedule"
