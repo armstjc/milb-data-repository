@@ -7,6 +7,8 @@ from urllib.request import urlopen
 import pandas as pd
 from tqdm import tqdm
 
+from get_milb_schedule import get_milb_schedule
+
 
 def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     """
@@ -792,14 +794,14 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
     pbp_df = pd.DataFrame()
     sched_df = pd.DataFrame()
 
-    if level.lower() == 'aaa':
-        sched_df = pd.read_csv(f'schedule/{season}_aaa_schedule.csv')
-    if level.lower() == 'aa':
-        sched_df = pd.read_csv(f'schedule/{season}_aa_schedule.csv')
-    if level.lower() == 'a':
-        sched_df = pd.read_csv(f'schedule/{season}_a_schedule.csv')
-    if level.lower() == 'rk' or level.lower() == 'rookie':
-        sched_df = pd.read_csv(f'schedule/{season}_rookie_schedule.csv')
+    if (level.lower() == 'aaa') or (level.lower() == 'triple-a') or (level.lower() == 'triple a'):
+        sched_df = get_milb_schedule(season, 'AAA')
+    if (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
+        sched_df = get_milb_schedule(season, 'AA')
+    if (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
+        sched_df = get_milb_schedule(season, 'A')
+    if (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
+        sched_df = get_milb_schedule(season, 'AA')
 
     sched_df = sched_df.loc[sched_df['status_abstract_game_state'] == 'Final']
     sched_df = sched_df.loc[(sched_df['game_month'] == month) & (
@@ -827,4 +829,4 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
 if __name__ == "__main__":
     print('starting up')
     # get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
-    get_month_milb_pbp(2023, 5, level="AA", cache_data=True, cache_dir='D:/')
+    get_month_milb_pbp(2023, 4, level="A", cache_data=True, cache_dir='D:/')

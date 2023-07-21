@@ -67,7 +67,7 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
             print(
                 f"Additional cached directories have been previously created and located.")
 
-    season = 2023
+    # season = 2023
     schedule_df = pd.DataFrame()
     row_df = pd.DataFrame()
 
