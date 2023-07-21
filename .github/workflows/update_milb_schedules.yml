@@ -35,24 +35,14 @@ jobs:
       - name: run Python Script
         run: |
           python get_milb_schedule.py
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: schedule
-          release_name: Schedule
-          body: |
-            Holds MiLB schedule data.
-          draft: false
-          prerelease: false
+      
       - uses: xresloader/upload-to-github-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           file: "schedule/*.csv"
-          release_id: ${{ steps.create_release.outputs.id }}
+          branches: "main"
           update_latest_release: true
           overwrite: true
           verbose: true
+          default_release_name: "Schedule"
