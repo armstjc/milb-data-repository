@@ -376,7 +376,7 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 if __name__ == "__main__":
 
-    for season in range(2020, 2021):
+    for season in range(2013, 2024):
         try:
             print(f'Getting Triple-A schedules.')
             aaa_df = get_milb_schedule(season, 'aaa')
