@@ -128,9 +128,12 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
             url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=11&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
         elif (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
             url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=12&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
-        elif (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
-            # Put all levels of single A in here to avoid confusion.
-            url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=13&sportId=14&sportId=15&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
+        elif (level.lower() == 'a+') or (level.lower() == 'high-a') or (level.lower() == 'high a'):
+            url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=13&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
+        elif (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single a'):
+            url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=14&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
+        elif (level.lower() == 'a-') or (level.lower() == 'short-a') or (level.lower() == 'short a'):
+            url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=15&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
         elif (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
             url = f"https://statsapi.mlb.com/api/v1/schedule?lang=en&sportId=16&hydrate=team(venue(timezone)),venue(timezone),game(seriesStatus,seriesSummary,tickets,promotions,sponsorships,content(summary,media(epg))),seriesStatus,seriesSummary,linescore&season={season}&eventTypes=primary&scheduleTypes=games,events,xref"
         else:
@@ -165,7 +168,11 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
             game_id = int(i['gamePk'])
             game_link = i['link']
             game_type = i['gameType']
-            game_season = int(i['season'])
+            try:
+                game_season = int(i['season'])
+            except:
+                game_season = float(i['season'])
+                game_season = int(game_season)
             game_date = i['gameDate']
             game_official_date = i['officialDate']
 
@@ -369,23 +376,71 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 if __name__ == "__main__":
 
-    for season in range(2021, 2023):
-        print(f'Getting Triple-A schedules.')
-        aaa_df = get_milb_schedule(season, 'aaa')
-        aaa_df.to_csv(f'schedule/{season}_aaa_schedule.csv', index=False)
-        del aaa_df
+    for season in range(2020, 2021):
+        try:
+            print(f'Getting Triple-A schedules.')
+            aaa_df = get_milb_schedule(season, 'aaa')
+            if len(aaa_df) > 0:
+                aaa_df.to_csv(
+                    f'schedule/{season}_aaa_schedule.csv', index=False)
 
-        print(f'Getting Double-A schedules.')
-        aa_df = get_milb_schedule(season, 'aa')
-        aa_df.to_csv(f'schedule/{season}_aa_schedule.csv', index=False)
-        del aa_df
+            del aaa_df
 
-        print(f'Getting Single-A schedules.')
-        a_df = get_milb_schedule(season, 'a')
-        a_df.to_csv(f'schedule/{season}_a_schedule.csv', index=False)
-        del a_df
+        except Exception as e:
+            print(f'Could not download Triple-A schedules.\nReason:\n{e}')
 
-        print(f'Getting Rookie Ball schedules.')
-        rookie_df = get_milb_schedule(season, 'rk')
-        rookie_df.to_csv(f'schedule/{season}_rookie_schedule.csv', index=False)
-        del rookie_df
+        try:
+            print(f'Getting Double-A schedules.')
+            aa_df = get_milb_schedule(season, 'aa')
+            if len(aa_df) > 0:
+                aa_df.to_csv(f'schedule/{season}_aa_schedule.csv', index=False)
+
+            del aa_df
+
+        except Exception as e:
+            print(f'Could not download Double-A schedules.\nReason:\n{e}')
+
+        try:
+            print(f'Getting High-A schedules.')
+            a_df = get_milb_schedule(season, 'a+')
+            if len(a_df) > 0:
+                a_df.to_csv(f'schedule/{season}_a+_schedule.csv', index=False)
+
+            del a_df
+
+        except Exception as e:
+            print(f'Could not download High-A schedules.\nReason:\n{e}')
+
+        try:
+            print(f'Getting Single-A schedules.')
+            a_df = get_milb_schedule(season, 'a')
+            if len(a_df) > 0:
+                a_df.to_csv(f'schedule/{season}_a_schedule.csv', index=False)
+
+            del a_df
+
+        except Exception as e:
+            print(f'Could not download Single-A schedules.\nReason:\n{e}')
+
+        try:
+            print(f'Getting Low-A schedules.')
+            a_df = get_milb_schedule(season, 'a-')
+            if len(a_df) > 0:
+                a_df.to_csv(f'schedule/{season}_a-_schedule.csv', index=False)
+
+            del a_df
+
+        except Exception as e:
+            print(f'Could not download Low-A schedules.\nReason:\n{e}')
+
+        try:
+            print(f'Getting Rookie Ball schedules.')
+            rookie_df = get_milb_schedule(season, 'rk')
+            if len(rookie_df) > 0:
+                rookie_df.to_csv(
+                    f'schedule/{season}_rookie_schedule.csv', index=False)
+
+            del rookie_df
+
+        except Exception as e:
+            print(f'Could not download Rookie Ball schedules.\nReason:\n{e}')
