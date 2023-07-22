@@ -798,8 +798,12 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
         sched_df = get_milb_schedule(season, 'AAA')
     if (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
         sched_df = get_milb_schedule(season, 'AA')
+    elif (level.lower() == 'a+') or (level.lower() == 'high-a') or (level.lower() == 'high a'):
+        sched_df = get_milb_schedule(season, 'A+')
     if (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
         sched_df = get_milb_schedule(season, 'A')
+    elif (level.lower() == 'a-') or (level.lower() == 'short-a') or (level.lower() == 'short a'):
+        sched_df = get_milb_schedule(season, 'A-')
     if (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
         sched_df = get_milb_schedule(season, 'AA')
 
@@ -820,7 +824,7 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
             game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
         pbp_df = pd.concat([pbp_df, game_df], ignore_index=True)
 
-    if save == True:
+    if save == True and len(pbp_df) > 0:
         pbp_df.to_csv(
             f'pbp/{season}_{month}_{level.lower()}_pbp.csv', index=False)
     return pbp_df
@@ -829,4 +833,7 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
 if __name__ == "__main__":
     print('starting up')
     # get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
-    get_month_milb_pbp(2023, 4, level="A", cache_data=True, cache_dir='D:/')
+    season = 2023
+    for i in range(3, 7):
+        get_month_milb_pbp(season, i, level="A",
+                           cache_data=True, cache_dir='D:/')
