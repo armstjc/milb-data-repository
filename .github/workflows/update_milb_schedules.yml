@@ -2,7 +2,7 @@ name: Update MiLB Schedules
 on:
   #schedule:
   #  - cron: "0,30 14-23,0-5 13-14 5 *"
-  #  - cron: "0 10 * 2-5 *"
+   - cron: "0 4 * * *"
   push:
     branches: [main]
   pull_request:

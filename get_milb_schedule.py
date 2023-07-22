@@ -375,10 +375,10 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 
 if __name__ == "__main__":
-
-    for season in range(2013, 2024):
+    now = datetime.now()
+    for season in range(now, now+1):
         try:
-            print(f'Getting Triple-A schedules.')
+            print(f'Getting {season} Triple-A schedules.')
             aaa_df = get_milb_schedule(season, 'aaa')
             if len(aaa_df) > 0:
                 aaa_df.to_csv(
@@ -387,10 +387,11 @@ if __name__ == "__main__":
             del aaa_df
 
         except Exception as e:
-            print(f'Could not download Triple-A schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} Triple-A schedules.\nReason:\n{e}')
 
         try:
-            print(f'Getting Double-A schedules.')
+            print(f'Getting {season} Double-A schedules.')
             aa_df = get_milb_schedule(season, 'aa')
             if len(aa_df) > 0:
                 aa_df.to_csv(f'schedule/{season}_aa_schedule.csv', index=False)
@@ -398,10 +399,11 @@ if __name__ == "__main__":
             del aa_df
 
         except Exception as e:
-            print(f'Could not download Double-A schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} Double-A schedules.\nReason:\n{e}')
 
         try:
-            print(f'Getting High-A schedules.')
+            print(f'Getting {season} High-A schedules.')
             a_df = get_milb_schedule(season, 'a+')
             if len(a_df) > 0:
                 a_df.to_csv(f'schedule/{season}_a+_schedule.csv', index=False)
@@ -409,10 +411,11 @@ if __name__ == "__main__":
             del a_df
 
         except Exception as e:
-            print(f'Could not download High-A schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} High-A schedules.\nReason:\n{e}')
 
         try:
-            print(f'Getting Single-A schedules.')
+            print(f'Getting {season} Single-A schedules.')
             a_df = get_milb_schedule(season, 'a')
             if len(a_df) > 0:
                 a_df.to_csv(f'schedule/{season}_a_schedule.csv', index=False)
@@ -420,10 +423,11 @@ if __name__ == "__main__":
             del a_df
 
         except Exception as e:
-            print(f'Could not download Single-A schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} Single-A schedules.\nReason:\n{e}')
 
         try:
-            print(f'Getting Low-A schedules.')
+            print(f'Getting {season} Low-A schedules.')
             a_df = get_milb_schedule(season, 'a-')
             if len(a_df) > 0:
                 a_df.to_csv(f'schedule/{season}_a-_schedule.csv', index=False)
@@ -431,10 +435,11 @@ if __name__ == "__main__":
             del a_df
 
         except Exception as e:
-            print(f'Could not download Low-A schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} Low-A schedules.\nReason:\n{e}')
 
         try:
-            print(f'Getting Rookie Ball schedules.')
+            print(f'Getting {season} Rookie Ball schedules.')
             rookie_df = get_milb_schedule(season, 'rk')
             if len(rookie_df) > 0:
                 rookie_df.to_csv(
@@ -443,4 +448,5 @@ if __name__ == "__main__":
             del rookie_df
 
         except Exception as e:
-            print(f'Could not download Rookie Ball schedules.\nReason:\n{e}')
+            print(
+                f'Could not download {season} Rookie Ball schedules.\nReason:\n{e}')
