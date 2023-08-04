@@ -1,5 +1,7 @@
+import argparse
 import json
 import os
+import platform
 import time
 from datetime import datetime
 from urllib.request import urlopen
@@ -154,65 +156,72 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
         json_data = json.loads(response.read())
 
-    json_data = json_data['dates'][0]['games'][0]['lineups']
+    try:
+        json_data = json_data['dates'][0]['games'][0]['lineups']
 
-    for i in json_data['awayPlayers']:
-        player_id = i['id']
-        player_pos = i['primaryPosition']['abbreviation']
+        for i in json_data['awayPlayers']:
+            player_id = i['id']
+            player_pos = i['primaryPosition']['abbreviation']
 
-        match player_pos:
-            case "DH":
-                # The designated hitter is not a fielder.
-                # Thus, we can skip this player.
-                continue
-            case "C":
-                away_fielders[1] = player_id
-            case "1B":
-                away_fielders[2] = player_id
-            case "2B":
-                away_fielders[3] = player_id
-            case "3B":
-                away_fielders[4] = player_id
-            case "SS":
-                away_fielders[5] = player_id
-            case "LF":
-                away_fielders[6] = player_id
-            case "CF":
-                away_fielders[7] = player_id
-            case "RF":
-                away_fielders[8] = player_id
-            case _:
-                raise ValueError(
-                    f"Unhandled starting player position:\n\t{player_pos}")
+            match player_pos:
+                case "DH":
+                    # The designated hitter is not a fielder.
+                    # Thus, we can skip this player.
+                    continue
+                case "P":
+                    away_fielders[0] = player_id
+                case "C":
+                    away_fielders[1] = player_id
+                case "1B":
+                    away_fielders[2] = player_id
+                case "2B":
+                    away_fielders[3] = player_id
+                case "3B":
+                    away_fielders[4] = player_id
+                case "SS":
+                    away_fielders[5] = player_id
+                case "LF":
+                    away_fielders[6] = player_id
+                case "CF":
+                    away_fielders[7] = player_id
+                case "RF":
+                    away_fielders[8] = player_id
+                case _:
+                    raise ValueError(
+                        f"Unhandled starting player position:\n\t{player_pos}")
 
-    for i in json_data['homePlayers']:
-        player_id = i['id']
-        player_pos = i['primaryPosition']['abbreviation']
+        for i in json_data['homePlayers']:
+            player_id = i['id']
+            player_pos = i['primaryPosition']['abbreviation']
 
-        match player_pos:
-            case "DH":
-                # The designated hitter is not a fielder.
-                # Thus, we can skip this player.
-                continue
-            case "C":
-                home_fielders[1] = player_id
-            case "1B":
-                home_fielders[2] = player_id
-            case "2B":
-                home_fielders[3] = player_id
-            case "3B":
-                home_fielders[4] = player_id
-            case "SS":
-                home_fielders[5] = player_id
-            case "LF":
-                home_fielders[6] = player_id
-            case "CF":
-                home_fielders[7] = player_id
-            case "RF":
-                home_fielders[8] = player_id
-            case _:
-                raise ValueError(
-                    f"Unhandled starting player position:\n\t{player_pos}")
+            match player_pos:
+                case "DH":
+                    # The designated hitter is not a fielder.
+                    # Thus, we can skip this player.
+                    continue
+                case "P":
+                    away_fielders[0] = player_id
+                case "C":
+                    home_fielders[1] = player_id
+                case "1B":
+                    home_fielders[2] = player_id
+                case "2B":
+                    home_fielders[3] = player_id
+                case "3B":
+                    home_fielders[4] = player_id
+                case "SS":
+                    home_fielders[5] = player_id
+                case "LF":
+                    home_fielders[6] = player_id
+                case "CF":
+                    home_fielders[7] = player_id
+                case "RF":
+                    home_fielders[8] = player_id
+                case _:
+                    raise ValueError(
+                        f"Unhandled starting player position:\n\t{player_pos}")
+    except:
+        print(f'Lineups data not found for {game_id}')
 
     if cache_data == True and (cache_dir == "" or cache_dir == None):
         # Cached files, default directory
@@ -278,6 +287,9 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
         json_data = json.loads(response.read())
 
     # json_data = json.loads(response.read())
+    if len(json_data) == 0:
+        print(f'\nCould not get PBP data for game ID {game_id}')
+        return pd.DataFrame()
 
     game_type = json_data['gameData']['game']['type']
     game_date = json_data['gameData']['datetime']['officialDate']
@@ -290,13 +302,35 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     league_level_id = json_data['gameData']['teams']['away']['sport']['id']
     league_level_name = json_data['gameData']['teams']['away']['sport']['name']
 
-    away_team_org_id = json_data['gameData']['teams']['away']['parentOrgId']
-    away_team_org_name = json_data['gameData']['teams']['away']['parentOrgName']
-    away_team_abv = json_data['gameData']['teams']['away']['abbreviation']
+    try:
+        away_team_org_id = json_data['gameData']['teams']['away']['parentOrgId']
+    except:
+        away_team_org_id = None
 
-    home_team_org_id = json_data['gameData']['teams']['home']['parentOrgId']
-    home_team_org_name = json_data['gameData']['teams']['home']['parentOrgName']
-    home_team_abv = json_data['gameData']['teams']['home']['abbreviation']
+    try:
+        away_team_org_name = json_data['gameData']['teams']['away']['parentOrgName']
+    except:
+        away_team_org_name = None
+
+    try:
+        away_team_abv = json_data['gameData']['teams']['away']['abbreviation']
+    except:
+        away_team_abv = None
+
+    try:
+        home_team_org_id = json_data['gameData']['teams']['home']['parentOrgId']
+    except:
+        home_team_org_id = None
+
+    try:
+        home_team_org_name = json_data['gameData']['teams']['home']['parentOrgName']
+    except:
+        home_team_org_name = None
+
+    try:
+        home_team_abv = json_data['gameData']['teams']['home']['abbreviation']
+    except:
+        home_team_abv = None
 
     for i in tqdm(json_data['liveData']['plays']['allPlays']):
 
@@ -307,7 +341,12 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
         pitcher_id = i['matchup']['pitcher']['id']
         pitcher_hand = i['matchup']['pitchHand']['code']
-        event = i['result']['event']
+
+        try:
+            event = i['result']['event']
+        except:
+            event = None
+
         try:
             sequence_description = i['result']['description']
         except:
@@ -326,6 +365,21 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
         post_away_score = i['result']['awayScore']
         post_home_score = i['result']['homeScore']
+
+        try:
+            on_1b = i['matchup']['postOnFirst']['id']
+        except:
+            on_1b = None
+
+        try:
+            on_2b = i['matchup']['postOnSecond']['id']
+        except:
+            on_2b = None
+
+        try:
+            on_3b = i['matchup']['postOnThird']['id']
+        except:
+            on_3b = None
 
         if top_bot == "Top":  # Home pitching
             bat_score = away_score
@@ -683,9 +737,9 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                         'pfx_z': pitch_pfx_z,
                         'plate_x': plate_x,
                         'plate_z': plate_z,
-                        'on_3b': '',
-                        'on_2b': '',
-                        'on_1b': '',
+                        'on_3b': on_3b,
+                        'on_2b': on_2b,
+                        'on_1b': on_1b,
                         'outs_when_up': play_outs,
                         'inning': inning,
                         'inning_topbot': top_bot,
@@ -776,7 +830,8 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
         del player_name, batter_id, \
             pitcher_id, sequence_description, \
             inning, top_bot, at_bat_num, \
-            batter_side, pitcher_hand, event \
+            batter_side, pitcher_hand, event, \
+            on_1b, on_2b, on_3b
 
         home_score = post_home_score
         away_score = post_away_score
@@ -805,7 +860,7 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
     elif (level.lower() == 'a-') or (level.lower() == 'short-a') or (level.lower() == 'short a'):
         sched_df = get_milb_schedule(season, 'A-')
     if (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
-        sched_df = get_milb_schedule(season, 'AA')
+        sched_df = get_milb_schedule(season, 'rk')
 
     sched_df = sched_df.loc[sched_df['status_abstract_game_state'] == 'Final']
     sched_df = sched_df.loc[(sched_df['game_month'] == month) & (
@@ -820,6 +875,13 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
         print('HEY!\nThat\'s a ton of data you want to access.\nPlease cache this data in the future to avoid severe data loss!')
 
     for game_id in tqdm(game_ids_arr):
+        # try:
+        #    game_df = get_milb_game_pbp(
+        #    game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
+        #    pbp_df = pd.concat([pbp_df, game_df], ignore_index=True)
+        # except Exception as e:
+        #     print(f'Unhandled use case. Error Details:\n{e}')
+
         game_df = get_milb_game_pbp(
             game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
         pbp_df = pd.concat([pbp_df, game_df], ignore_index=True)
@@ -827,13 +889,56 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
     if save == True and len(pbp_df) > 0:
         pbp_df.to_csv(
             f'pbp/{season}_{month}_{level.lower()}_pbp.csv', index=False)
+
     return pbp_df
 
 
 if __name__ == "__main__":
     print('starting up')
     # get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
-    season = 2023
-    for i in range(3, 7):
-        get_month_milb_pbp(season, i, level="A",
-                           cache_data=True, cache_dir='D:/')
+    now = datetime.now()
+    c_dir = 'D:/'
+    start_month = 3
+    end_month = 12
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--season', type=int, required=True)
+    parser.add_argument('--level', type=str, required=True)
+    args = parser.parse_args()
+
+    season = args.season
+
+    if season == now.year and now.day <= 5:
+        # This is here to ensure that a game being played
+        # in between 2 months
+        # (like a game starting on March 31st but ending on April 1st)
+        # is not skipped,
+        # and there's multiple opportunities
+        # to make sure nothing is skipped.
+        start_month = now.month - 1
+        end_month = now.month + 1
+    elif season == now.year:
+        start_month = now.month
+        end_month = now.month + 1
+
+    lg_level = args.level
+
+    for i in range(start_month, end_month):
+        if platform.system() == "Windows":
+            print(
+                f'Getting {i}/{season} PBP data in the {lg_level} level of MiLB.')
+            get_month_milb_pbp(
+                season,
+                i,
+                level=lg_level,
+                cache_data=True,
+                cache_dir=c_dir
+            )
+        else:
+            print(
+                f'Getting {i}/{season} PBP data in the {lg_level} level of MiLB.')
+            get_month_milb_pbp(
+                season,
+                i,
+                level=lg_level
+            )
