@@ -1,5 +1,4 @@
 import json
-import os
 import time
 from datetime import datetime
 from urllib.request import urlopen
@@ -214,6 +213,7 @@ def get_milb_team_list(season: int, save=True):
 
 if __name__ == "__main__":
     now = datetime.now()
-    for i in range(now.year, now.year+1):
+    # for i in range(now.year, now.year+1):
+    for i in range(2015, now.year+1):
         print(f'Getting a list of teams in the MLB API for the {i} season.')
         get_milb_team_list(i)

@@ -1,12 +1,11 @@
 name: Update MiLB Schedules
 on:
   schedule:
-  #  - cron: "0,30 14-23,0-5 13-14 5 *"
-   - cron: "0 4 * * *"
+    - cron: "0 0 1 2-11 *"
   push:
     branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -35,7 +34,7 @@ jobs:
       - name: run Python Script
         run: |
           python get_milb_schedule.py
-      
+
       - uses: xresloader/upload-to-github-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

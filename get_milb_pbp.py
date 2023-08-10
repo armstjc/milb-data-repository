@@ -851,15 +851,15 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
 
     if (level.lower() == 'aaa') or (level.lower() == 'triple-a') or (level.lower() == 'triple a'):
         sched_df = get_milb_schedule(season, 'AAA')
-    if (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
+    elif (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
         sched_df = get_milb_schedule(season, 'AA')
     elif (level.lower() == 'a+') or (level.lower() == 'high-a') or (level.lower() == 'high a'):
         sched_df = get_milb_schedule(season, 'A+')
-    if (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
+    elif (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
         sched_df = get_milb_schedule(season, 'A')
     elif (level.lower() == 'a-') or (level.lower() == 'short-a') or (level.lower() == 'short a'):
         sched_df = get_milb_schedule(season, 'A-')
-    if (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
+    elif (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
         sched_df = get_milb_schedule(season, 'rk')
 
     sched_df = sched_df.loc[sched_df['status_abstract_game_state'] == 'Final']
@@ -895,11 +895,12 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
 
 if __name__ == "__main__":
     print('starting up')
-    # get_milb_game_pbp(725505, cache_data=True, cache_dir='D:/')
+
     now = datetime.now()
     c_dir = 'D:/'
-    start_month = 3
-    end_month = 12
+    start_month = 1
+    # This is to ensure that any game played in December for this level is downloaded.
+    end_month = 13
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--season', type=int, required=True)
@@ -908,7 +909,7 @@ if __name__ == "__main__":
 
     season = args.season
 
-    if season == now.year and now.day <= 5:
+    if season == now.year and now.day <= 5 and platform.system() == "Windows":
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
@@ -917,6 +918,7 @@ if __name__ == "__main__":
         # to make sure nothing is skipped.
         start_month = now.month - 1
         end_month = now.month + 1
+
     elif season == now.year:
         start_month = now.month
         end_month = now.month + 1
