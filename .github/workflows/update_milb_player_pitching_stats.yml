@@ -2,6 +2,10 @@ name: Update MiLB Season Player Pitching Stats
 on:
   schedule:
     - cron: "10 0 1 3-11 *"
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
