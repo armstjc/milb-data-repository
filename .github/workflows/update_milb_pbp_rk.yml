@@ -1,4 +1,4 @@
-name: Update MiLB PBP - AAA
+name: Update MiLB PBP - Rookie Ball
 on:
   schedule:
     - cron: "0 0 9 2-11 *"
@@ -39,9 +39,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "schedule/*.csv"
+          file: "pbp/*.csv"
           branches: "main"
           #update_latest_release: true
           overwrite: true
           verbose: true
-          default_release_name: "Schedule"
+          default_release_name: "PBP"
