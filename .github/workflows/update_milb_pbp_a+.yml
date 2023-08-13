@@ -1,11 +1,11 @@
-name: Update MiLB Season Player Pitching Stats
+name: Update MiLB PBP - AAA
 on:
   schedule:
-    - cron: "10 0 1 3-11 *"
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
+    - cron: "0 0 7 2-11 *"
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -33,19 +33,15 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_player_season_stats.py --season 2023 --level aaa --stat_type pitching
-          python get_milb_player_season_stats.py --season 2023 --level aa --stat_type pitching
-          python get_milb_player_season_stats.py --season 2023 --level a+ --stat_type pitching
-          python get_milb_player_season_stats.py --season 2023 --level a --stat_type pitching
-          python get_milb_player_season_stats.py --season 2023 --level rk --stat_type pitching
+          python get_milb_pbp.py --season 2023 --level aaa
 
       - uses: xresloader/upload-to-github-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "season_stats/player/*.csv"
+          file: "schedule/*.csv"
           branches: "main"
-          # update_latest_release: true
+          #update_latest_release: true
           overwrite: true
           verbose: true
-          default_release_name: "MiLB_Season_Player_Pitching"
+          default_release_name: "Schedule"
