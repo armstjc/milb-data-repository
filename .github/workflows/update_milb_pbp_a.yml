@@ -33,7 +33,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_pbp.py --season 2023 --level aaa
+          python get_milb_pbp.py --season 2023 --level a
 
       - uses: xresloader/upload-to-github-release@main
         env:
