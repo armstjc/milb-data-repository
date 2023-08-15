@@ -245,7 +245,6 @@ def get_milb_player_season_stats(season: int, level: str, team_id: int, stats_ty
             row_df['pitching_IP'] = i['outs']/3
             row_df['pitching_IP'] = row_df['pitching_IP'].round(3)
 
-            row_df['pitching_PI'] = i['numberOfPitches']
             row_df['pitching_BF'] = i['battersFaced']
             row_df['pitching_AB'] = i['atBats']
             row_df['pitching_R'] = i['runs']
@@ -298,10 +297,13 @@ def get_milb_player_season_stats(season: int, level: str, team_id: int, stats_ty
             row_df['pitching_pop_outs'] = i['popOuts']
             row_df['pitching_line_outs'] = i['lineOuts']
 
+            row_df['pitching_PI'] = i['numberOfPitches']
             row_df['pitching_total_swings'] = i['totalSwings']
             row_df['pitching_swing_and_misses'] = i['swingAndMisses']
             row_df['pitching_balls_in_play'] = i['ballsInPlay']
-            row_df['pitching_strikes'] = i['strikes']
+            row_df['pitching_PI_strikes'] = i['strikes']
+            row_df['pitching_PI_balls'] = row_df['pitching_PI'] - \
+                row_df['pitching_PI_strikes']
             row_df['pitching_WP'] = i['wildPitches']
 
             game_df = pd.concat([game_df, row_df], ignore_index=True)

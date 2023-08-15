@@ -1,11 +1,11 @@
 name: Update MiLB PBP - AAA
 on:
   schedule:
-    - cron: "0 0 5 2-11 *"
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    - cron: "0 5 * 3-10 *"
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   build:
