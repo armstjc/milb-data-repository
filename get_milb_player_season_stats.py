@@ -369,8 +369,8 @@ def get_milb_player_season_stats(season: int, level: str, team_id: int, stats_ty
         game_df.loc[game_df['pitching_BF'] > 0, 'pitching_HR/PA'] = round(
             game_df['pitching_HR']/game_df['pitching_BF'], 3)
 
-        game_df.loc[game_df['pitching_BF'] > 0, 'pitching_SO/PA'] = round(
-            game_df['pitching_SO']/game_df['pitching_BF'], 3)
+        # game_df.loc[game_df['pitching_BF'] > 0, 'pitching_SO/PA'] = round(
+        #     game_df['pitching_SO']/game_df['pitching_BF'], 3)
 
         game_df.loc[game_df['pitching_BF'] > 0, 'pitching_BB/PA'] = round(
             game_df['pitching_BB']/game_df['pitching_BF'], 3)
