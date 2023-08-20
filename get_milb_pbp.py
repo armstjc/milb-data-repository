@@ -543,6 +543,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                     fielder_9 = away_fielders[8]
                 else:
                     raise ValueError(f'Unhandled inning state:\n\t{top_bot}')
+
                 try:
                     pitch_num = j['pitchNumber']
                 except:
@@ -552,10 +553,13 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                 play_strikes = j['count']['strikes']
                 play_outs = j['count']['outs']
 
-                pitch_type = j['details']['code']
+                try:
+                    pitch_type = j['details']['type']['code']
+                except:
+                    pitch_type = None
 
                 try:
-                    pitch_name = j['details']['description']
+                    pitch_name = j['details']['type']['description']
                 except:
                     pitch_name = None
 
@@ -909,7 +913,7 @@ if __name__ == "__main__":
 
     season = args.season
 
-    if season == now.year and now.day <= 5 and platform.system() == "Windows":
+    if season == now.year and now.day <= 2 and platform.system() == "Windows":
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)

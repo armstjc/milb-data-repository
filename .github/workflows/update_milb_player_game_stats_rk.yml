@@ -2,10 +2,10 @@ name: Update MiLB Player Game Stats - Rookie Ball
 on:
   schedule:
     - cron: "30 9 * 5-10 *"
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   build:
