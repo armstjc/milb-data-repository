@@ -11,7 +11,7 @@ from tqdm import tqdm
 from get_milb_teams import get_milb_team_list
 
 
-def get_milb_player_season_stats(season: int, level: str, team_id: int, stats_type='batting'):
+def get_milb_player_team_season_stats(season: int, level: str, team_id: int, stats_type='batting'):
     """
 
     """
@@ -383,7 +383,7 @@ def get_milb_player_season_stats(season: int, level: str, team_id: int, stats_ty
         return game_df
 
 
-def get_milb_season_stats(season: int, level: str, stats_type='batting', save=False):
+def get_milb_player_season_stats(season: int, level: str, stats_type='batting', save=False):
     """
 
     """
@@ -428,7 +428,7 @@ def get_milb_season_stats(season: int, level: str, stats_type='batting', save=Fa
 
     for team_id in tqdm(team_id_arr):
         try:
-            game_df = get_milb_player_season_stats(
+            game_df = get_milb_player_team_season_stats(
                 season=season,
                 level=level,
                 team_id=team_id,
@@ -438,7 +438,7 @@ def get_milb_season_stats(season: int, level: str, stats_type='batting', save=Fa
             print(f'\nCould not get player season stats for team ID {team_id}')
             game_df = pd.DataFrame()
 
-        # game_df = get_milb_player_season_stats(
+        # game_df = get_milb_player_team_season_stats(
         #     season=season,
         #     level=level,
         #     team_id=team_id,
@@ -518,7 +518,7 @@ if __name__ == "__main__":
             f'{season} and {end_season} seasons.')
 
         for s in range(season, end_season+1):
-            get_milb_season_stats(
+            get_milb_player_season_stats(
                 season=s,
                 level=lg_level,
                 stats_type=stats_type,
@@ -531,7 +531,7 @@ if __name__ == "__main__":
             f'for the {season} {lg_level.upper()} baseball season.'
         )
 
-        get_milb_season_stats(
+        get_milb_player_season_stats(
             season=season,
             level=lg_level,
             stats_type=stats_type,

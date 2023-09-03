@@ -241,8 +241,10 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             player_jersey_number = str(value['jerseyNumber'])
         except:
             player_jersey_number = None
-
-        player_full_name = value['person']['fullName']
+        try:
+            player_full_name = value['person']['fullName']
+        except:
+            player_full_name = None
         try:
             player_batitng_order = str(value['battingOrder'])
         except:
@@ -396,7 +398,12 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             player_jersey_number = str(value['jerseyNumber'])
         except:
             player_jersey_number = None
-        player_full_name = value['person']['fullName']
+
+        try:
+            player_full_name = value['person']['fullName']
+        except:
+            player_full_name = None
+
         try:
             player_batitng_order = str(value['battingOrder'])
         except:

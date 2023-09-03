@@ -289,7 +289,6 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
             teams_home_team_link = i['teams']['home']['team']['link']
 
             row_df = pd.DataFrame({
-                'date': game_date,
                 'game_pk': game_id,
                 'link': game_link,
                 'game_type': game_type,
@@ -376,7 +375,7 @@ def get_milb_schedule(season: int, level="AAA", cache_data=False, cache_dir=""):
 
 if __name__ == "__main__":
     now = datetime.now()
-    for season in range(now.year, now.year+1):
+    for season in range(2005, now.year+1):
         try:
             print(f'Getting {season} Triple-A schedules.')
             aaa_df = get_milb_schedule(season, 'aaa')
