@@ -1,4 +1,4 @@
-name: Update MiLB Season Player Pitching Stats
+name: Update MiLB Season Team Pitching Stats
 on:
   schedule:
     - cron: "40 0 * 3-10 *"
