@@ -856,11 +856,23 @@ def get_month_milb_pbp(season: int, month: int, level="AAA", cache_data=False, c
     if (level.lower() == 'aaa') or (level.lower() == 'triple-a') or (level.lower() == 'triple a'):
         sched_df = get_milb_schedule(season, 'AAA')
     elif (level.lower() == 'aa') or (level.lower() == 'double-a') or (level.lower() == 'double a'):
-        sched_df = get_milb_schedule(season, 'AA')
+        if season == 2010:
+            sched_df = pd.read_csv(
+                f'https://github.com/armstjc/milb-data-repository/releases/download/schedule/{season}_aa_schedule.csv')
+        else:
+            sched_df = get_milb_schedule(season, 'AA')
     elif (level.lower() == 'a+') or (level.lower() == 'high-a') or (level.lower() == 'high a'):
-        sched_df = get_milb_schedule(season, 'A+')
+        if season == 2011:
+            sched_df = pd.read_csv(
+                f'https://github.com/armstjc/milb-data-repository/releases/download/schedule/{season}_a+_schedule.csv')
+        else:
+            sched_df = get_milb_schedule(season, 'A+')
     elif (level.lower() == 'a') or (level.lower() == 'single-a') or (level.lower() == 'single-a'):
-        sched_df = get_milb_schedule(season, 'A')
+        if season == 2010 or season == 2013 or season == 2014:
+            sched_df = pd.read_csv(
+                f'https://github.com/armstjc/milb-data-repository/releases/download/schedule/{season}_a_schedule.csv')
+        else:
+            sched_df = get_milb_schedule(season, 'A')
     elif (level.lower() == 'a-') or (level.lower() == 'short-a') or (level.lower() == 'short a'):
         sched_df = get_milb_schedule(season, 'A-')
     elif (level.lower() == 'rk') or (level.lower() == 'rok') or (level.lower() == 'rookie'):
