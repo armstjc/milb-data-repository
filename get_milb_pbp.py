@@ -39,6 +39,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     A pandas `DataFrame` object containing PBP data from 
     the MiLB game ID.
     """
+    has_lineups = False
     if cache_data == True and (cache_dir == "" or cache_dir == None):
         home_dir = os.path.expanduser('~')
 
@@ -68,7 +69,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     game_df = pd.DataFrame()
     play_df = pd.DataFrame()
     lineups_url = f"https://statsapi.mlb.com/api/v1/schedule?gamePk={game_id}&language=en&hydrate=story,xrefId,lineups,broadcasts(all),probablePitcher(note),game(tickets)&useLatestGames=true&fields=dates,games,teams,probablePitcher,note,id,dates,games,broadcasts,type,name,homeAway,isNational,dates,games,game,tickets,ticketType,ticketLinks,dates,games,lineups,homePlayers,awayPlayers,useName,lastName,primaryPosition,abbreviation,dates,games,xrefIds,xrefId,xrefType,story"
-    game_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_id}/feed/live/diffPatch?"
+    game_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_id}/feed/live?"
 
     # Baseball Positions
     ###################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
@@ -84,8 +85,8 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
     # away_fielders = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     # home_fielders = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    away_fielders = [None, 0, 0, 0, 0, 0, 0, 0, 0]
-    home_fielders = [None, 0, 0, 0, 0, 0, 0, 0, 0]
+    away_fielders = [None, None, None, None, None, None, None, None, None]
+    home_fielders = [None, None, None, None, None, None, None, None, None]
 
     away_score = 0
     home_score = 0
@@ -97,6 +98,8 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                 json_string = f.read()
 
             json_data = json.loads(json_string)
+            has_lineups = True
+
             del json_string
         except:
             response = urlopen(lineups_url)
@@ -112,8 +115,12 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                     f'Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}')
 
             json_data = json.loads(response.read())
-            with open(f"{home_dir}/.milb/lineups/{game_id}.json", 'w+') as f:
-                f.write(json.dumps(json_data, indent=2))
+            try:
+                with open(f"{home_dir}/.milb/lineups/{game_id}.json", 'w+') as f:
+                    f.write(json.dumps(json_data, indent=2))
+                has_lineups = True
+            except:
+                has_lineups = False
 
     elif cache_data == True and (cache_dir != "" or cache_dir != None):
         # Cached files, custom directory
@@ -123,6 +130,8 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
 
             json_data = json.loads(json_string)
             del json_string
+            has_lineups = True
+
         except:
             response = urlopen(lineups_url)
             time.sleep(1)
@@ -136,91 +145,104 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                 raise ConnectionError(
                     f'Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}')
 
-            json_data = json.loads(response.read())
-            with open(f"{cache_dir}/.milb/lineups/{game_id}.json", 'w+') as f:
-                f.write(json.dumps(json_data, indent=2))
+            try:
+                json_data = json.loads(response.read())
+                with open(f"{cache_dir}/.milb/lineups/{game_id}.json", 'w+') as f:
+                    f.write(json.dumps(json_data, indent=2))
+
+                has_lineups = True
+            except:
+                has_lineups = False
 
     else:
         # No cached files used.
         response = urlopen(lineups_url)
         time.sleep(1)
 
-        if response.code == 200:
-            pass
-        elif response.code == 403:
-            raise ConnectionRefusedError(
-                'The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403')
-        else:
-            raise ConnectionError(
-                f'Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}')
+        try:
+            if response.code == 200:
+                pass
+            elif response.code == 403:
+                raise ConnectionRefusedError(
+                    'The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403')
+            else:
+                raise ConnectionError(
+                    f'Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}')
 
-        json_data = json.loads(response.read())
+            json_data = json.loads(response.read())
+            has_lineups = True
+        except:
+            has_lineups = False
 
-    try:
-        json_data = json_data['dates'][0]['games'][0]['lineups']
+    if has_lineups == True:
+        try:
+            json_data = json_data['dates'][0]['games'][0]['lineups']
 
-        for i in json_data['awayPlayers']:
-            player_id = i['id']
-            player_pos = i['primaryPosition']['abbreviation']
+            for i in json_data['awayPlayers']:
+                player_id = i['id']
+                player_pos = i['primaryPosition']['abbreviation']
 
-            match player_pos:
-                case "DH":
-                    # The designated hitter is not a fielder.
-                    # Thus, we can skip this player.
-                    continue
-                case "P":
-                    away_fielders[0] = player_id
-                case "C":
-                    away_fielders[1] = player_id
-                case "1B":
-                    away_fielders[2] = player_id
-                case "2B":
-                    away_fielders[3] = player_id
-                case "3B":
-                    away_fielders[4] = player_id
-                case "SS":
-                    away_fielders[5] = player_id
-                case "LF":
-                    away_fielders[6] = player_id
-                case "CF":
-                    away_fielders[7] = player_id
-                case "RF":
-                    away_fielders[8] = player_id
-                case _:
-                    raise ValueError(
-                        f"Unhandled starting player position:\n\t{player_pos}")
+                match player_pos:
+                    case "DH":
+                        # The designated hitter is not a fielder.
+                        # Thus, we can skip this player.
+                        continue
+                    case "P":
+                        away_fielders[0] = player_id
+                    case "C":
+                        away_fielders[1] = player_id
+                    case "1B":
+                        away_fielders[2] = player_id
+                    case "2B":
+                        away_fielders[3] = player_id
+                    case "3B":
+                        away_fielders[4] = player_id
+                    case "SS":
+                        away_fielders[5] = player_id
+                    case "LF":
+                        away_fielders[6] = player_id
+                    case "CF":
+                        away_fielders[7] = player_id
+                    case "RF":
+                        away_fielders[8] = player_id
+                    case _:
+                        raise ValueError(
+                            f"Unhandled starting player position:\n\t{player_pos}")
 
-        for i in json_data['homePlayers']:
-            player_id = i['id']
-            player_pos = i['primaryPosition']['abbreviation']
+            for i in json_data['homePlayers']:
+                player_id = i['id']
+                player_pos = i['primaryPosition']['abbreviation']
 
-            match player_pos:
-                case "DH":
-                    # The designated hitter is not a fielder.
-                    # Thus, we can skip this player.
-                    continue
-                case "P":
-                    away_fielders[0] = player_id
-                case "C":
-                    home_fielders[1] = player_id
-                case "1B":
-                    home_fielders[2] = player_id
-                case "2B":
-                    home_fielders[3] = player_id
-                case "3B":
-                    home_fielders[4] = player_id
-                case "SS":
-                    home_fielders[5] = player_id
-                case "LF":
-                    home_fielders[6] = player_id
-                case "CF":
-                    home_fielders[7] = player_id
-                case "RF":
-                    home_fielders[8] = player_id
-                case _:
-                    raise ValueError(
-                        f"Unhandled starting player position:\n\t{player_pos}")
-    except:
+                match player_pos:
+                    case "DH":
+                        # The designated hitter is not a fielder.
+                        # Thus, we can skip this player.
+                        continue
+                    case "P":
+                        away_fielders[0] = player_id
+                    case "C":
+                        home_fielders[1] = player_id
+                    case "1B":
+                        home_fielders[2] = player_id
+                    case "2B":
+                        home_fielders[3] = player_id
+                    case "3B":
+                        home_fielders[4] = player_id
+                    case "SS":
+                        home_fielders[5] = player_id
+                    case "LF":
+                        home_fielders[6] = player_id
+                    case "CF":
+                        home_fielders[7] = player_id
+                    case "RF":
+                        home_fielders[8] = player_id
+                    case _:
+                        raise ValueError(
+                            f"Unhandled starting player position:\n\t{player_pos}")
+        except:
+            print(f'Lineups data not found for {game_id}')
+
+    else:
         print(f'Lineups data not found for {game_id}')
 
     if cache_data == True and (cache_dir == "" or cache_dir == None):
@@ -960,3 +982,12 @@ if __name__ == "__main__":
                 i,
                 level=lg_level
             )
+
+    # for i in range(start_month, end_month):
+    #     get_month_milb_pbp(
+    #         2009,
+    #         i,
+    #         level="aaa",
+    #         cache_data=True,
+    #         cache_dir=c_dir
+    #     )
