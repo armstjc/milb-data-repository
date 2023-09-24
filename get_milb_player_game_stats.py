@@ -67,7 +67,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
 
     game_df = pd.DataFrame()
     row_df = pd.DataFrame()
-    game_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_id}/feed/live/diffPatch?"
+    game_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_id}/feed/live?"
 
     if cache_data == True and (cache_dir == "" or cache_dir == None):
         # Cached files, default directory
