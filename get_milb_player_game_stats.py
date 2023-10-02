@@ -617,7 +617,7 @@ if __name__ == "__main__":
     for i in range(start_month, end_month):
         if platform.system() == "Windows":
             print(
-                f'Getting {i}/{season} PBP data in the {lg_level} level of MiLB.')
+                f'Getting {i}/{season} player game stats data in the {lg_level} level of MiLB.')
             get_month_milb_player_game_stats(
                 season,
                 i,
@@ -627,7 +627,7 @@ if __name__ == "__main__":
             )
         else:
             print(
-                f'Getting {i}/{season} PBP data in the {lg_level} level of MiLB.')
+                f'Getting {i}/{season} player game stats data in the {lg_level} level of MiLB.')
             get_month_milb_player_game_stats(
                 season,
                 i,

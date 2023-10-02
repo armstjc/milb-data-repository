@@ -1,7 +1,7 @@
 name: Update MiLB PBP - A
 on:
   schedule:
-    - cron: "0 8 * 3-10 *"
+    - cron: "0 8 * 3-9 *"
 
   # push:
   #   branches: [main]
@@ -34,7 +34,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_pbp.py --season 2023 --level a
+          python get_milb_pbp.py --season 2024 --level a
 
       - uses: xresloader/upload-to-github-release@main
         env:

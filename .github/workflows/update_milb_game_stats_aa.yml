@@ -1,7 +1,7 @@
 name: Update MiLB Player Game Stats - AA
 on:
   schedule:
-    - cron: "30 6 * 3-10 *"
+    - cron: "30 6 * 4-10 *"
   # push:
   #   branches: [main]
   # pull_request:
@@ -33,7 +33,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_player_game_stats.py --season 2023 --level aa
+          python get_milb_player_game_stats.py --season 2024 --level aa
 
       - uses: xresloader/upload-to-github-release@main
         env:

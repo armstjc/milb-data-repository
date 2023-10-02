@@ -1,7 +1,7 @@
 name: Update MiLB PBP - Rookie Ball
 on:
   schedule:
-    - cron: "0 9 * 5-10 *"
+    - cron: "0 9 * 5-9 *"
   # push:
   #   branches: [main]
   # pull_request:
@@ -33,7 +33,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_pbp.py --season 2023 --level rk
+          python get_milb_pbp.py --season 2024 --level rk
 
       - uses: xresloader/upload-to-github-release@main
         env:
