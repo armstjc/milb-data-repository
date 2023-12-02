@@ -5,12 +5,15 @@ import platform
 import time
 from datetime import datetime
 from urllib.request import urlopen
+import warnings
+import numpy as np
 
 import pandas as pd
 from tqdm import tqdm
 
 from get_milb_schedule import get_milb_schedule
 
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
     """
@@ -848,7 +851,8 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                     fielder_2, fielder_3, fielder_4,\
                     fielder_5, fielder_6, fielder_7,\
                     fielder_8, fielder_9
-
+                
+                game_df.fillna(value=np.NaN,inplace=True)
                 game_df = pd.concat([game_df, play_df], ignore_index=True)
 
             del is_pitch
@@ -947,7 +951,14 @@ if __name__ == "__main__":
 
     season = args.season
 
-    if season == now.year and now.day <= 2 and platform.system() == "Windows":
+    if season == now.year and now.month >= 11:
+        start_month = now.month - 5
+        end_month = now.month - 4
+    elif season == now.year and now.month <=3:
+        start_month = now.month + 3
+        end_month = now.month + 4
+        season -= 1
+    elif season == now.year and now.day <= 2 and platform.system() == "Windows":
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)

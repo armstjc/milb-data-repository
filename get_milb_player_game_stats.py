@@ -564,15 +564,15 @@ def get_month_milb_player_game_stats(season: int, month: int, level="AAA", cache
         print('HEY!\nThat\'s a ton of data you want to access.\nPlease cache this data in the future to avoid severe data loss!')
 
     for game_id in tqdm(game_ids_arr):
-        # try:
-        #    game_df =  get_milb_player_game_stats(
-        #    game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
-        #    stats_df = pd.concat([stats_df, game_df], ignore_index=True)
-        # except Exception as e:
-        #     print(f'Unhandled use case. Error Details:\n{e}')
+        try:
+           game_df =  get_milb_player_game_stats(
+           game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
+           stats_df = pd.concat([stats_df, game_df], ignore_index=True)
+        except Exception as e:
+            print(f'Unhandled use case. Error Details:\n{e}')
 
-        game_df = get_milb_player_game_stats(
-            game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
+        # game_df = get_milb_player_game_stats(
+        #     game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
         stats_df = pd.concat([stats_df, game_df], ignore_index=True)
 
     if save == True and len(stats_df) > 0:
