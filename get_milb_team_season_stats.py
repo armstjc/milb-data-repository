@@ -91,7 +91,7 @@ def get_milb_team_season_stats(
             print(f"\nNo stats found in the {season} season.")
             return pd.DataFrame()
 
-        # if len(json_data["stats"]) == 0:
+        # # if len(json_data["stats"]) == 0:
         if "stats" in json_data:
             # If true, we don't have data.
             print(f"\nNo stats found in the {season} season.")
@@ -453,87 +453,87 @@ if __name__ == "__main__":
     print("Starting up.")
     now = datetime.now()
 
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument(
-    #     "--season",
-    #     type=int,
-    #     required=True,
-    #     help="The season you want player season stats from.",
-    # )
-
-    # parser.add_argument(
-    #     "--end_season",
-    #     type=int,
-    #     required=False,
-    #     help="Optional argument. "
-    #     + "If you want to download data from a range of seasons, "
-    #     + "set `--end_season` to the final season you want stats from.",
-    # )
-
-    # parser.add_argument(
-    #     "--level",
-    #     type=str,
-    #     required=True,
-    #     help="The MiLB level you want player season stats from.",
-    # )
-
-    # parser.add_argument(
-    #     "--stat_type",
-    #     type=str,
-    #     required=True,
-    #     help="The type of stats you want to download. "
-    #     + "Valid arguments are `batting` or `pitching`.",
-    # )
-
-    # args = parser.parse_args()
-
-    # season = args.season
-    # end_season = args.end_season
-    # lg_level = args.level
-    # stats_type = args.stat_type
-
-    # if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
-    #     raise ValueError(
-    #         '`--stats_type` must be set to "batting" or "pitching".'
-    #     )
-
-    # if end_season is not None:
-    #     if season > end_season:
-    #         raise ValueError(
-    #             "`--season` cannot be greater than `--end_season`."
-    #         )
-    #     elif season == end_season:
-    #         raise ValueError("`--end_season` cannot be equal to `--season`.")
-
-    #     print(
-    #         f"Parsing season player {stats_type} stats at the "
-    #         + f"{lg_level.upper()} baseball level between the "
-    #         + f"{season} and {end_season} seasons."
-    #     )
-
-    #     for s in tqdm(range(season, end_season + 1)):
-    #         try:
-    #             get_milb_team_season_stats(
-    #                 season=s, level=lg_level, stats_type=stats_type, save=True
-    #             )
-    #         except Exception:
-    #             print(
-    #                 f"\nCould not get {lg_level.upper()} {stats_type} " +
-    #                 f"stats for the {s} season."
-    #             )
-    # else:
-    #     print(
-    #         f"Parsing season player {stats_type} stats "
-    #         + f"for the {season} {lg_level.upper()} baseball season."
-    #     )
-
-    #     get_milb_team_season_stats(
-    #         season=season, level=lg_level, stats_type=stats_type, save=True
-    #     )
-
-    get_milb_team_season_stats(
-        season=2024,
-        level="aa",
-        stats_type="pitching",
-        save=True
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--season",
+        type=int,
+        required=True,
+        help="The season you want player season stats from.",
     )
+
+    parser.add_argument(
+        "--end_season",
+        type=int,
+        required=False,
+        help="Optional argument. "
+        + "If you want to download data from a range of seasons, "
+        + "set `--end_season` to the final season you want stats from.",
+    )
+
+    parser.add_argument(
+        "--level",
+        type=str,
+        required=True,
+        help="The MiLB level you want player season stats from.",
+    )
+
+    parser.add_argument(
+        "--stat_type",
+        type=str,
+        required=True,
+        help="The type of stats you want to download. "
+        + "Valid arguments are `batting` or `pitching`.",
+    )
+
+    args = parser.parse_args()
+
+    season = args.season
+    end_season = args.end_season
+    lg_level = args.level
+    stats_type = args.stat_type
+
+    if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
+        raise ValueError(
+            '`--stats_type` must be set to "batting" or "pitching".'
+        )
+
+    if end_season is not None:
+        if season > end_season:
+            raise ValueError(
+                "`--season` cannot be greater than `--end_season`."
+            )
+        elif season == end_season:
+            raise ValueError("`--end_season` cannot be equal to `--season`.")
+
+        print(
+            f"Parsing season player {stats_type} stats at the "
+            + f"{lg_level.upper()} baseball level between the "
+            + f"{season} and {end_season} seasons."
+        )
+
+        for s in tqdm(range(season, end_season + 1)):
+            try:
+                get_milb_team_season_stats(
+                    season=s, level=lg_level, stats_type=stats_type, save=True
+                )
+            except Exception:
+                print(
+                    f"\nCould not get {lg_level.upper()} {stats_type} " +
+                    f"stats for the {s} season."
+                )
+    else:
+        print(
+            f"Parsing season player {stats_type} stats "
+            + f"for the {season} {lg_level.upper()} baseball season."
+        )
+
+        get_milb_team_season_stats(
+            season=season, level=lg_level, stats_type=stats_type, save=True
+        )
+
+    # get_milb_team_season_stats(
+    #     season=2024,
+    #     level="aaa",
+    #     stats_type="pitching",
+    #     save=True
+    # )
