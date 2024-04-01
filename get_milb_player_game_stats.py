@@ -14,7 +14,7 @@ from get_milb_schedule import get_milb_schedule
 
 def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
     """
-    Retrives and parses the player game box score stats from a valid
+    Retrieves and parses the player game box score stats from a valid
     MiLB game ID.
 
     Parameters
@@ -25,12 +25,14 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
     `cache_data`: (bool, optional) = `False`:
         Optional boolean flag.
         If set to `True`, data downloaded by this function will be cached to
-        a folder named `./milb/`. This folder will either be located in the user's
-        home directory,
-        or in a existing directory specified by the optional argument `cache_dir`.
+        a folder named `./milb/`.
+        This folder will either be located in the user's home directory,
+        or in a existing directory specified
+        by the optional argument `cache_dir`.
 
     `cache_dir`: (str, optional) = `""`:
-        Optional string. If not set to `""` or `None`, this will be the directory used
+        Optional string.
+        If not set to `""` or `None`, this will be the directory used
         to cache data if `cache_data` is set to `True`.
         This directory must exist prior to running this function!
 
@@ -39,44 +41,44 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
     A pandas `DataFrame` object containing player game box score stats from
     the MiLB game ID.
     """
-    if cache_data == True and (cache_dir == "" or cache_dir == None):
+    if cache_data is True and (cache_dir == "" or cache_dir is None):
         home_dir = os.path.expanduser("~")
 
         try:
             os.mkdir(f"{home_dir}/.milb/")
-        except:
+        except Exception:
             pass
 
         try:
             os.mkdir(f"{home_dir}/.milb/pbp/")
             os.mkdir(f"{home_dir}/.milb/lineups/")
-        except:
+        except Exception:
             pass
 
-    elif cache_data == True and (cache_dir != "" or cache_dir != None):
+    elif cache_data is True and (cache_dir != "" or cache_dir is not None):
         try:
             os.mkdir(f"{cache_dir}/.milb/")
-        except:
+        except Exception:
             pass
 
         try:
             os.mkdir(f"{cache_dir}/.milb/pbp/")
             os.mkdir(f"{cache_dir}/.milb/lineups/")
-        except:
+        except Exception:
             pass
 
     game_df = pd.DataFrame()
     row_df = pd.DataFrame()
     game_url = f"https://statsapi.mlb.com/api/v1.1/game/{game_id}/feed/live?"
 
-    if cache_data == True and (cache_dir == "" or cache_dir == None):
+    if cache_data is True and (cache_dir == "" or cache_dir is None):
         # Cached files, default directory
         try:
             with open(f"{home_dir}/.milb/pbp/{game_id}.json", "r") as f:
                 json_string = f.read()
 
             json_data = json.loads(json_string)
-        except:
+        except Exception:
             response = urlopen(game_url)
             time.sleep(1)
 
@@ -84,24 +86,26 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                 pass
             elif response.code == 403:
                 raise ConnectionRefusedError(
-                    "The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403"
+                    "The MiLB API is actively refusing your connection."
+                    + "\nHTTP Error Code:\t403"
                 )
             else:
                 raise ConnectionError(
-                    f"Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}"
+                    "Could not establish a connection to the MiLB API."
+                    + f"\nHTTP Error Code:\t{response.code}"
                 )
 
             json_data = json.loads(response.read())
             with open(f"{home_dir}/.milb/pbp/{game_id}.json", "w+") as f:
                 f.write(json.dumps(json_data, indent=2))
 
-    elif cache_data == True and (cache_dir != "" or cache_dir != None):
+    elif cache_data is True and (cache_dir != "" or cache_dir is not None):
         try:
             with open(f"{cache_dir}/.milb/pbp/{game_id}.json", "r") as f:
                 json_string = f.read()
 
             json_data = json.loads(json_string)
-        except:
+        except Exception:
             response = urlopen(game_url)
             time.sleep(1)
 
@@ -109,11 +113,13 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                 pass
             elif response.code == 403:
                 raise ConnectionRefusedError(
-                    "The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403"
+                    "The MiLB API is actively refusing your connection."
+                    + "\nHTTP Error Code:\t403"
                 )
             else:
                 raise ConnectionError(
-                    f"Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}"
+                    "Could not establish a connection to the MiLB API."
+                    + f"\nHTTP Error Code:\t{response.code}"
                 )
 
             json_data = json.loads(response.read())
@@ -129,11 +135,13 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             pass
         elif response.code == 403:
             raise ConnectionRefusedError(
-                "The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403"
+                "The MiLB API is actively refusing your connection."
+                + "\nHTTP Error Code:\t403"
             )
         else:
             raise ConnectionError(
-                f"Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}"
+                "Could not establish a connection to the MiLB API."
+                + f"\nHTTP Error Code:\t{response.code}"
             )
 
         json_data = json.loads(response.read())
@@ -146,7 +154,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
     game_type = json_data["gameData"]["game"]["type"]
     game_date = json_data["gameData"]["datetime"]["officialDate"]
     game_date = datetime.strptime(game_date, "%Y-%m-%d")
-    game_date_str = game_date.strftime("%Y-%m-%d")
+    # game_date_str = game_date.strftime("%Y-%m-%d")
 
     league_id = json_data["gameData"]["teams"]["away"]["league"]["id"]
     league_name = json_data["gameData"]["teams"]["away"]["league"]["name"]
@@ -155,67 +163,73 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
     league_level_name = json_data["gameData"]["teams"]["away"]["sport"]["name"]
 
     try:
-        away_team_org_id = json_data["gameData"]["teams"]["away"]["parentOrgId"]
-    except:
+        away_team_org_id = json_data[
+            "gameData"]["teams"]["away"]["parentOrgId"]
+    except Exception:
         away_team_org_id = None
 
     try:
-        away_team_org_name = json_data["gameData"]["teams"]["away"]["parentOrgName"]
-    except:
+        away_team_org_name = json_data[
+            "gameData"]["teams"]["away"]["parentOrgName"]
+    except Exception:
         away_team_org_name = None
 
     try:
         away_team_id = json_data["gameData"]["teams"]["away"]["id"]
-    except:
+    except Exception:
         away_team_id = None
 
     try:
         away_team_abv = json_data["gameData"]["teams"]["away"]["abbreviation"]
-    except:
+    except Exception:
         away_team_abv = None
 
     try:
         away_team_name = json_data["gameData"]["teams"]["away"]["name"]
-    except:
+    except Exception:
         away_team_name = None
 
     try:
-        home_team_org_id = json_data["gameData"]["teams"]["home"]["parentOrgId"]
-    except:
+        home_team_org_id = json_data[
+            "gameData"]["teams"]["home"]["parentOrgId"]
+    except Exception:
         home_team_org_id = None
 
     try:
-        home_team_org_name = json_data["gameData"]["teams"]["home"]["parentOrgName"]
-    except:
+        home_team_org_name = json_data[
+            "gameData"]["teams"]["home"]["parentOrgName"]
+    except Exception:
         home_team_org_name = None
 
     try:
         home_team_id = json_data["gameData"]["teams"]["home"]["id"]
-    except:
+    except Exception:
         home_team_id = None
 
     try:
         home_team_abv = json_data["gameData"]["teams"]["home"]["abbreviation"]
-    except:
+    except Exception:
         home_team_abv = None
 
     try:
         home_team_name = json_data["gameData"]["teams"]["home"]["name"]
-    except:
+    except Exception:
         home_team_name = None
 
     try:
         away_runs = json_data["gameData"]["linescore"]["teams"]["away"]["runs"]
-    except:
+    except Exception:
         away_runs = 0
 
     try:
         home_runs = json_data["gameData"]["linescore"]["teams"]["home"]["runs"]
-    except:
+    except Exception:
         home_runs = 0
 
-    away_player_stats = json_data["liveData"]["boxscore"]["teams"]["away"]["players"]
-    home_player_stats = json_data["liveData"]["boxscore"]["teams"]["home"]["players"]
+    away_player_stats = json_data[
+        "liveData"]["boxscore"]["teams"]["away"]["players"]
+    home_player_stats = json_data[
+        "liveData"]["boxscore"]["teams"]["home"]["players"]
 
     for key, value in away_player_stats.items():
         loc = "A"
@@ -237,7 +251,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                     player_pos = i["abbreviation"]
                 else:
                     player_pos = f"{player_pos}/{i['abbreviation']}"
-        except:
+        except Exception:
             player_pos = None
 
         del player_pos_num
@@ -245,16 +259,16 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
         player_id = value["person"]["id"]
         try:
             player_jersey_number = str(value["jerseyNumber"])
-        except:
+        except Exception:
             player_jersey_number = None
         try:
             player_full_name = value["person"]["fullName"]
-        except:
+        except Exception:
             player_full_name = None
         try:
-            player_batitng_order = str(value["battingOrder"])
-        except:
-            player_batitng_order = None
+            player_batting_order = str(value["battingOrder"])
+        except Exception:
+            player_batting_order = None
 
         row_df = pd.DataFrame(
             {
@@ -284,7 +298,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                 "player_jersey_number": player_jersey_number,
                 "player_full_name": player_full_name,
                 "player_position": player_pos,
-                "player_batitng_order": player_batitng_order,
+                "player_batting_order": player_batting_order,
             },
             index=[0],
         )
@@ -307,12 +321,15 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["batting_IBB"] = player_data["batting"]["intentionalWalks"]
             row_df["batting_SO"] = player_data["batting"]["strikeOuts"]
             row_df["batting_TB"] = player_data["batting"]["totalBases"]
-            row_df["batting_GiDP"] = player_data["batting"]["groundIntoDoublePlay"]
-            row_df["batting_GiTP"] = player_data["batting"]["groundIntoTriplePlay"]
+            row_df["batting_GiDP"] = player_data[
+                "batting"]["groundIntoDoublePlay"]
+            row_df["batting_GiTP"] = player_data[
+                "batting"]["groundIntoTriplePlay"]
             row_df["batting_HBP"] = player_data["batting"]["hitByPitch"]
             row_df["batting_SH"] = player_data["batting"]["sacBunts"]
             row_df["batting_SF"] = player_data["batting"]["sacFlies"]
-            row_df["batting_CI"] = player_data["batting"]["catchersInterference"]
+            row_df["batting_CI"] = player_data[
+                "batting"]["catchersInterference"]
             row_df["batting_FO"] = player_data["batting"]["flyOuts"]
             row_df["batting_GO"] = player_data["batting"]["groundOuts"]
             row_df["batting_LOB"] = player_data["batting"]["leftOnBase"]
@@ -328,13 +345,18 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["pitching_W"] = player_data["pitching"]["wins"]
             row_df["pitching_L"] = player_data["pitching"]["losses"]
 
-            row_df["pitching_SVO"] = player_data["pitching"]["saveOpportunities"]
+            row_df["pitching_SVO"] = player_data[
+                "pitching"]["saveOpportunities"]
             row_df["pitching_SV"] = player_data["pitching"]["saves"]
             row_df["pitching_BS"] = player_data["pitching"]["blownSaves"]
             row_df["pitching_HLD"] = player_data["pitching"]["holds"]
 
-            row_df["pitching_IP"] = round(player_data["pitching"]["outs"] / 3, 3)
-            row_df["pitching_IP_str"] = str(player_data["pitching"]["inningsPitched"])
+            row_df["pitching_IP"] = round(
+                player_data["pitching"]["outs"] / 3, 3
+            )
+            row_df["pitching_IP_str"] = str(
+                player_data["pitching"]["inningsPitched"]
+            )
 
             row_df["pitching_R"] = player_data["pitching"]["runs"]
             row_df["pitching_ER"] = player_data["pitching"]["earnedRuns"]
@@ -346,7 +368,8 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["pitching_HR"] = player_data["pitching"]["homeRuns"]
             row_df["pitching_RBI"] = player_data["pitching"]["rbi"]
             row_df["pitching_BB"] = player_data["pitching"]["baseOnBalls"]
-            row_df["pitching_IBB"] = player_data["pitching"]["intentionalWalks"]
+            row_df["pitching_IBB"] = player_data[
+                "pitching"]["intentionalWalks"]
             row_df["pitching_SO"] = player_data["pitching"]["strikeOuts"]
             row_df["pitching_HBP"] = player_data["pitching"]["hitByPitch"]
             row_df["pitching_BK"] = player_data["pitching"]["balks"]
@@ -359,12 +382,14 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
 
             row_df["pitching_SH"] = player_data["pitching"]["sacBunts"]
             row_df["pitching_SF"] = player_data["pitching"]["sacFlies"]
-            row_df["pitching_CI"] = player_data["pitching"]["catchersInterference"]
+            row_df["pitching_CI"] = player_data[
+                "pitching"]["catchersInterference"]
             row_df["pitching_PB"] = player_data["pitching"]["passedBall"]
             row_df["pitching_PK"] = player_data["pitching"]["pickoffs"]
 
             row_df["pitching_IR"] = player_data["pitching"]["inheritedRunners"]
-            row_df["pitching_IRS"] = player_data["pitching"]["inheritedRunnersScored"]
+            row_df["pitching_IRS"] = player_data[
+                "pitching"]["inheritedRunnersScored"]
 
             row_df["pitching_PI"] = player_data["pitching"]["numberOfPitches"]
             row_df["pitching_PI_strikes"] = player_data["pitching"]["strikes"]
@@ -393,7 +418,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                     player_pos = i["abbreviation"]
                 else:
                     player_pos = f"{player_pos}/{i['abbreviation']}"
-        except:
+        except Exception:
             player_pos = None
 
         del player_pos_num
@@ -401,18 +426,18 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
         player_id = value["person"]["id"]
         try:
             player_jersey_number = str(value["jerseyNumber"])
-        except:
+        except Exception:
             player_jersey_number = None
 
         try:
             player_full_name = value["person"]["fullName"]
-        except:
+        except Exception:
             player_full_name = None
 
         try:
-            player_batitng_order = str(value["battingOrder"])
-        except:
-            player_batitng_order = None
+            player_batting_order = str(value["battingOrder"])
+        except Exception:
+            player_batting_order = None
 
         row_df = pd.DataFrame(
             {
@@ -442,7 +467,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
                 "player_jersey_number": player_jersey_number,
                 "player_full_name": player_full_name,
                 "player_position": player_pos,
-                "player_batitng_order": player_batitng_order,
+                "player_batting_order": player_batting_order,
             },
             index=[0],
         )
@@ -465,12 +490,15 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["batting_IBB"] = player_data["batting"]["intentionalWalks"]
             row_df["batting_SO"] = player_data["batting"]["strikeOuts"]
             row_df["batting_TB"] = player_data["batting"]["totalBases"]
-            row_df["batting_GiDP"] = player_data["batting"]["groundIntoDoublePlay"]
-            row_df["batting_GiTP"] = player_data["batting"]["groundIntoTriplePlay"]
+            row_df["batting_GiDP"] = player_data[
+                "batting"]["groundIntoDoublePlay"]
+            row_df["batting_GiTP"] = player_data[
+                "batting"]["groundIntoTriplePlay"]
             row_df["batting_HBP"] = player_data["batting"]["hitByPitch"]
             row_df["batting_SH"] = player_data["batting"]["sacBunts"]
             row_df["batting_SF"] = player_data["batting"]["sacFlies"]
-            row_df["batting_CI"] = player_data["batting"]["catchersInterference"]
+            row_df["batting_CI"] = player_data[
+                "batting"]["catchersInterference"]
             row_df["batting_FO"] = player_data["batting"]["flyOuts"]
             row_df["batting_GO"] = player_data["batting"]["groundOuts"]
             row_df["batting_LOB"] = player_data["batting"]["leftOnBase"]
@@ -486,13 +514,18 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["pitching_W"] = player_data["pitching"]["wins"]
             row_df["pitching_L"] = player_data["pitching"]["losses"]
 
-            row_df["pitching_SVO"] = player_data["pitching"]["saveOpportunities"]
+            row_df["pitching_SVO"] = player_data[
+                "pitching"]["saveOpportunities"]
             row_df["pitching_SV"] = player_data["pitching"]["saves"]
             row_df["pitching_BS"] = player_data["pitching"]["blownSaves"]
             row_df["pitching_HLD"] = player_data["pitching"]["holds"]
 
-            row_df["pitching_IP"] = round(player_data["pitching"]["outs"] / 3, 3)
-            row_df["pitching_IP_str"] = str(player_data["pitching"]["inningsPitched"])
+            row_df["pitching_IP"] = round(
+                player_data["pitching"]["outs"] / 3, 3
+            )
+            row_df["pitching_IP_str"] = str(
+                player_data["pitching"]["inningsPitched"]
+            )
 
             row_df["pitching_R"] = player_data["pitching"]["runs"]
             row_df["pitching_ER"] = player_data["pitching"]["earnedRuns"]
@@ -504,7 +537,8 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
             row_df["pitching_HR"] = player_data["pitching"]["homeRuns"]
             row_df["pitching_RBI"] = player_data["pitching"]["rbi"]
             row_df["pitching_BB"] = player_data["pitching"]["baseOnBalls"]
-            row_df["pitching_IBB"] = player_data["pitching"]["intentionalWalks"]
+            row_df["pitching_IBB"] = player_data[
+                "pitching"]["intentionalWalks"]
             row_df["pitching_SO"] = player_data["pitching"]["strikeOuts"]
             row_df["pitching_HBP"] = player_data["pitching"]["hitByPitch"]
             row_df["pitching_BK"] = player_data["pitching"]["balks"]
@@ -517,12 +551,14 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
 
             row_df["pitching_SH"] = player_data["pitching"]["sacBunts"]
             row_df["pitching_SF"] = player_data["pitching"]["sacFlies"]
-            row_df["pitching_CI"] = player_data["pitching"]["catchersInterference"]
+            row_df["pitching_CI"] = player_data[
+                "pitching"]["catchersInterference"]
             row_df["pitching_PB"] = player_data["pitching"]["passedBall"]
             row_df["pitching_PK"] = player_data["pitching"]["pickoffs"]
 
             row_df["pitching_IR"] = player_data["pitching"]["inheritedRunners"]
-            row_df["pitching_IRS"] = player_data["pitching"]["inheritedRunnersScored"]
+            row_df["pitching_IRS"] = player_data[
+                "pitching"]["inheritedRunnersScored"]
 
             row_df["pitching_PI"] = player_data["pitching"]["numberOfPitches"]
             row_df["pitching_PI_strikes"] = player_data["pitching"]["strikes"]
@@ -534,7 +570,12 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
 
 
 def get_month_milb_player_game_stats(
-    season: int, month: int, level="AAA", cache_data=False, cache_dir="", save=True
+    season: int,
+    month: int,
+    level: str = "AAA",
+    cache_data: bool = False,
+    cache_dir: str = "",
+    save: bool = True,
 ):
     """ """
 
@@ -590,9 +631,11 @@ def get_month_milb_player_game_stats(
 
     game_ids_arr = sched_df["game_pk"].to_numpy()
 
-    if len(game_ids_arr) > 30 and cache_data == False:
+    if len(game_ids_arr) > 30 and cache_data is False:
         print(
-            "HEY!\nThat's a ton of data you want to access.\nPlease cache this data in the future to avoid severe data loss!"
+            "HEY!\nThat's a ton of data you want to access."
+            + "\nPlease cache this data in the future " +
+            "to avoid severe data loss!"
         )
 
     for game_id in tqdm(game_ids_arr):
@@ -608,9 +651,10 @@ def get_month_milb_player_game_stats(
         #     game_id=game_id, cache_data=cache_data, cache_dir=cache_dir)
         stats_df = pd.concat([stats_df, game_df], ignore_index=True)
 
-    if save == True and len(stats_df) > 0:
+    if save is True and len(stats_df) > 0:
         stats_df.to_csv(
-            f"game_stats/player/{season}_{month}_{level.lower()}_player_game_stats.csv",
+            f"game_stats/player/{season}_{month}_{level.lower()}" +
+            "_player_game_stats.csv",
             index=False,
         )
 
@@ -623,7 +667,8 @@ if __name__ == "__main__":
     now = datetime.now()
     c_dir = "D:/"
     start_month = 1
-    # This is to ensure that any game played in December for this level is downloaded.
+    # This is to ensure that any game played in December
+    # for this level is downloaded.
     end_month = 13
 
     parser = argparse.ArgumentParser()
@@ -632,8 +677,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     season = args.season
-    
-    if season == None:
+
+    if season is None:
         season == now.year
 
     if season == now.year and now.month >= 11:
@@ -643,7 +688,8 @@ if __name__ == "__main__":
         start_month = now.month + 3
         end_month = now.month + 4
         season -= 1
-    elif season == now.year and now.day <= 5 and platform.system() == "Windows":
+    elif season == now.year and now.day <= 5 \
+            and platform.system() == "Windows":
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
@@ -661,13 +707,15 @@ if __name__ == "__main__":
     for i in range(start_month, end_month):
         if platform.system() == "Windows":
             print(
-                f"Getting {i}/{season} player game stats data in the {lg_level} level of MiLB."
+                f"Getting {i}/{season} player game stats data " +
+                f"in the {lg_level} level of MiLB."
             )
             get_month_milb_player_game_stats(
                 season, i, level=lg_level, cache_data=True, cache_dir=c_dir
             )
         else:
             print(
-                f"Getting {i}/{season} player game stats data in the {lg_level} level of MiLB."
+                f"Getting {i}/{season} player game stats data " +
+                f"in the {lg_level} level of MiLB."
             )
             get_month_milb_player_game_stats(season, i, level=lg_level)

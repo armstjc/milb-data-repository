@@ -27,10 +27,14 @@ def get_milb_team_list(season: int, save=True):
         pass
     elif response.code == 403:
         raise ConnectionRefusedError(
-            'The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403')
+            'The MiLB API is actively refusing your connection.' +
+            '\nHTTP Error Code:\t403'
+        )
     else:
         raise ConnectionError(
-            f'Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}')
+            'Could not establish a connection to the MiLB API.' +
+            f'\nHTTP Error Code:\t{response.code}'
+        )
 
     json_data = json.loads(response.read())
 
@@ -38,126 +42,126 @@ def get_milb_team_list(season: int, save=True):
         team_id = team['id']
         try:
             team_full_name = team['name']
-        except:
+        except Exception:
             team_full_name = None
 
         team_link = team['link']
 
         try:
             team_venue_id = team['venue']['id']
-        except:
+        except Exception:
             team_venue_id = None
 
         try:
             team_venue_name = team['venue']['name']
-        except:
+        except Exception:
             team_venue_name = None
 
         try:
             team_venue_link = team['venue']['link']
-        except:
+        except Exception:
             team_venue_link = None
 
         try:
             team_code = team['teamCode']
-        except:
+        except Exception:
             team_code = None
 
         try:
             file_code = team['fileCode']
-        except:
+        except Exception:
             file_code = None
 
         try:
             team_abbreviation = team['abbreviation']
-        except:
+        except Exception:
             team_abbreviation = None
 
         try:
             team_short_name = team['shortName']
-        except:
+        except Exception:
             team_short_name = None
 
         try:
             team_nickname = team['teamName']
-        except:
+        except Exception:
             team_nickname = None
 
         try:
             team_location = team['locationName']
-        except:
+        except Exception:
             team_location = None
 
         try:
             first_year_of_play = int(team['firstYearOfPlay'])
-        except:
+        except Exception:
             first_year_of_play = None
 
         try:
             league_id = team['league']['id']
-        except:
+        except Exception:
             league_id = None
 
         try:
             league_name = team['league']['name']
-        except:
+        except Exception:
             league_name = None
 
         try:
             league_link = team['league']['link']
-        except:
+        except Exception:
             league_link = None
 
         try:
             division_id = team['division']['id']
-        except:
+        except Exception:
             division_id = None
 
         try:
             division_name = team['division']['name']
-        except:
+        except Exception:
             division_name = None
 
         try:
             division_link = team['division']['link']
-        except:
+        except Exception:
             division_link = None
 
         try:
             sport_id = team['sport']['id']
-        except:
+        except Exception:
             sport_id = None
 
         try:
             sport_name = team['sport']['name']
-        except:
+        except Exception:
             sport_name = None
 
         try:
             sport_link = team['sport']['link']
-        except:
+        except Exception:
             sport_link = None
 
         # College teams are returned in this API endpoint.
         # Those teams do not have a parent org.
         try:
             parent_org_name = team['parentOrgName']
-        except:
+        except Exception:
             parent_org_name = None
 
         try:
             parent_org_id = team['parentOrgId']
-        except:
+        except Exception:
             parent_org_id = None
 
         try:
             franchise_name = team['franchiseName']
-        except:
+        except Exception:
             franchise_name = None
 
         try:
             club_name = team['clubName']
-        except:
+        except Exception:
             club_name = None
 
         is_active_team = team['active']
@@ -199,13 +203,13 @@ def get_milb_team_list(season: int, save=True):
             team_venue_name, team_venue_link, team_code, \
             team_abbreviation, team_nickname, team_location, \
             first_year_of_play, league_id, league_name, \
-            league_link, division_id, division_name, division_link,\
-            sport_id, sport_name, sport_link, team_short_name,\
-            parent_org_name, parent_org_id, franchise_name,\
+            league_link, division_id, division_name, division_link, \
+            sport_id, sport_name, sport_link, team_short_name, \
+            parent_org_name, parent_org_id, franchise_name, \
             club_name, is_active_team
         teams_df = pd.concat([teams_df, row_df], ignore_index=True)
 
-    if save == True:
+    if save is True:
         teams_df.to_csv(f'teams/{season}_teams.csv', index=False)
 
     return teams_df

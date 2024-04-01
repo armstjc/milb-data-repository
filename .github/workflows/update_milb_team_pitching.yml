@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v3
@@ -34,11 +34,11 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_team_season_stats.py --season 2023 --level aaa --stat_type pitching
-          python get_milb_team_season_stats.py --season 2023 --level aa --stat_type pitching
-          python get_milb_team_season_stats.py --season 2023 --level a+ --stat_type pitching
-          python get_milb_team_season_stats.py --season 2023 --level a --stat_type pitching
-          python get_milb_team_season_stats.py --season 2023 --level rk --stat_type pitching
+          python get_milb_team_season_stats.py --season 2024 --level aaa --stat_type pitching
+          python get_milb_team_season_stats.py --season 2024 --level aa --stat_type pitching
+          python get_milb_team_season_stats.py --season 2024 --level a+ --stat_type pitching
+          python get_milb_team_season_stats.py --season 2024 --level a --stat_type pitching
+          python get_milb_team_season_stats.py --season 2024 --level rk --stat_type pitching
 
       - uses: xresloader/upload-to-github-release@main
         env:

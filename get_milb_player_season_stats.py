@@ -48,13 +48,23 @@ def get_milb_player_team_season_stats(
         )
 
     if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
-        raise ValueError('\n`stats_type` must be set to "batting" or "pitching".')
+        raise ValueError(
+            '\n`stats_type` must be set to "batting" or "pitching".'
+        )
 
-    pitching_url = f"https://bdfed.stitch.mlbinfra.com/bdfed/stats/player?stitch_env=prod&season={season}&sportId={level_id}&teamId={team_id}&stats=season&group=pitching&gameType=R&limit=100&offset=0&playerPool=ALL"
-    batting_url = f"https://bdfed.stitch.mlbinfra.com/bdfed/stats/player?stitch_env=prod&season={season}&sportId={level_id}&teamId={team_id}&stats=season&group=hitting&gameType=R&limit=100&offset=0&playerPool=ALL"
+    pitching_url = "https://bdfed.stitch.mlbinfra.com/bdfed/stats/player?" +\
+        f"stitch_env=prod&season={season}&sportId={level_id}" +\
+        f"&teamId={team_id}&stats=season&group=pitching&gameType=R" +\
+        "&limit=100&offset=0&playerPool=ALL"
+    batting_url = "https://bdfed.stitch.mlbinfra.com/bdfed/stats/player?" +\
+        f"stitch_env=prod&season={season}&sportId={level_id}" +\
+        f"&teamId={team_id}&stats=season&group=hitting&gameType=R" +\
+        "&limit=100&offset=0&playerPool=ALL"
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) " +
+        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+        "Chrome/83.0.4103.97 Safari/537.36"
     }
 
     if stats_type.lower() == "batting":
@@ -65,22 +75,30 @@ def get_milb_player_team_season_stats(
             pass
         elif response.status_code == 403:
             raise ConnectionRefusedError(
-                "\nThe MiLB API is actively refusing your connection.\nHTTP Error Code:\t403"
+                "\nThe MiLB API is actively refusing your connection." +
+                "\nHTTP Error Code:\t403"
             )
         else:
             raise ConnectionError(
-                f"\nCould not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}"
+                "\nCould not establish a connection to the MiLB API." +
+                f"\nHTTP Error Code:\t{response.code}"
             )
 
         json_data = json.loads(response.text)
 
         if json_data["totalSplits"] == 0:
             # If true, we don't have data.
-            print(f"\nNo stats found for team ID `{team_id}` in the {season} season.")
+            print(
+                f"\nNo stats found for team ID `{team_id}` " +
+                f"in the {season} season."
+            )
             return pd.DataFrame()
 
         for i in json_data["stats"]:
-            row_df = pd.DataFrame({"season": season, "team_id": team_id}, index=[0])
+            row_df = pd.DataFrame(
+                {"season": season, "team_id": team_id},
+                index=[0]
+            )
             row_df["team_abv"] = i["teamAbbrev"]
             row_df["team_name"] = i["teamName"]
             row_df["team_league_id"] = i["leagueId"]
@@ -102,7 +120,7 @@ def get_milb_player_team_season_stats(
                 )
 
             # Batting Stats
-            ###################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+            ###################################################################
 
             row_df["G"] = i["gamesPlayed"]
             row_df["batting_PA"] = i["plateAppearances"]
@@ -153,7 +171,9 @@ def get_milb_player_team_season_stats(
         game_df["batting_AVG"] = game_df["batting_AVG"].round(3)
 
         game_df.loc[game_df["batting_PA"] > 0, "batting_OBP"] = (
-            game_df["batting_BB"] + game_df["batting_HBP"] + game_df["batting_SF"]
+            game_df["batting_BB"] +
+            game_df["batting_HBP"] +
+            game_df["batting_SF"]
         ) / (
             game_df["batting_AB"]
             + game_df["batting_BB"]
@@ -167,7 +187,8 @@ def get_milb_player_team_season_stats(
         )
         game_df["batting_SLG"] = game_df["batting_SLG"].round(3)
 
-        game_df["batting_OPS"] = game_df["batting_OBP"] + game_df["batting_SLG"]
+        game_df["batting_OPS"] = game_df["batting_OBP"] + \
+            game_df["batting_SLG"]
         game_df["batting_OPS"] = game_df["batting_OPS"].round(3)
 
         game_df.loc[game_df["batting_AB"] > 0, "batting_ISO"] = (
@@ -201,22 +222,30 @@ def get_milb_player_team_season_stats(
             pass
         elif response.status_code == 403:
             raise ConnectionRefusedError(
-                "The MiLB API is actively refusing your connection.\nHTTP Error Code:\t403"
+                "The MiLB API is actively refusing your connection." +
+                "\nHTTP Error Code:\t403"
             )
         else:
             raise ConnectionError(
-                f"Could not establish a connection to the MiLB API.\nHTTP Error Code:\t{response.code}"
+                "Could not establish a connection to the MiLB API." +
+                f"\nHTTP Error Code:\t{response.code}"
             )
 
         json_data = json.loads(response.text)
 
         if json_data["totalSplits"] == 0:
             # If true, we don't have data.
-            print(f"\nNo stats found for team ID `{team_id}` in the {season} season.")
+            print(
+                f"\nNo stats found for team ID `{team_id}` " +
+                f"in the {season} season."
+            )
             return pd.DataFrame()
 
         for i in json_data["stats"]:
-            row_df = pd.DataFrame({"season": season, "team_id": team_id}, index=[0])
+            row_df = pd.DataFrame(
+                {"season": season, "team_id": team_id},
+                index=[0]
+            )
             row_df["team_abv"] = i["teamAbbrev"]
             row_df["team_name"] = i["teamName"]
             row_df["team_league_id"] = i["leagueId"]
@@ -278,7 +307,7 @@ def get_milb_player_team_season_stats(
             row_df["pitching_GiDP"] = i["groundIntoDoublePlay"]
             try:
                 row_df["pitching_GiDP_opp"] = i["gidpOpp"]
-            except:
+            except Exception:
                 row_df["pitching_GiDP_opp"] = None
 
             row_df["pitching_CI"] = i["catchersInterference"]
@@ -296,7 +325,7 @@ def get_milb_player_team_season_stats(
 
             try:
                 row_df["pitching_CS"] = i["caughtStealing"]
-            except:
+            except Exception:
                 row_df["pitching_CS"] = None
 
             row_df["pitching_PK"] = i["pickoffs"]
@@ -326,14 +355,18 @@ def get_milb_player_team_season_stats(
         game_df.loc[
             (game_df["pitching_W"] + game_df["pitching_L"]) > 0, "pitching_W%"
         ] = round(
-            game_df["pitching_W"] / (game_df["pitching_W"] + game_df["pitching_L"]), 3
+            game_df["pitching_W"] / (
+                game_df["pitching_W"] + game_df["pitching_L"]
+            ),
+            3
         )
 
         game_df.loc[game_df["pitching_IP"] > 0, "pitching_ERA"] = round(
             9 * (game_df["pitching_ER"] / game_df["pitching_IP"]), 3
         )
 
-        # Needs other parts of the repo to be built up before implimentation.
+        # Needs other parts of the repo to be built up
+        # before implementation.
         # game_df['pitching_FIP'] = None
 
         game_df.loc[game_df["pitching_IP"] > 0, "pitching_RA9"] = round(
@@ -341,7 +374,10 @@ def get_milb_player_team_season_stats(
         )
 
         game_df.loc[game_df["pitching_IP"] > 0, "pitching_WHIP"] = round(
-            (game_df["pitching_BB"] + game_df["pitching_H"]) / game_df["pitching_IP"], 3
+            (
+                game_df["pitching_BB"] +
+                game_df["pitching_H"]
+            ) / game_df["pitching_IP"], 3
         )
 
         game_df.loc[game_df["pitching_IP"] > 0, "pitching_H/9"] = round(
@@ -380,7 +416,11 @@ def get_milb_player_team_season_stats(
         )
 
         game_df.loc[game_df["pitching_BF"] > 0, "pitching_OBP"] = round(
-            (game_df["pitching_H"] + game_df["pitching_BB"] + game_df["pitching_HBP"])
+            (
+                game_df["pitching_H"] +
+                game_df["pitching_BB"] +
+                game_df["pitching_HBP"]
+            )
             / (
                 game_df["pitching_AB"]
                 + game_df["pitching_BB"]
@@ -474,7 +514,9 @@ def get_milb_player_season_stats(
         )
 
     if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
-        raise ValueError('`stats_type` must be set to "batting" or "pitching".')
+        raise ValueError(
+            '`stats_type` must be set to "batting" or "pitching".'
+        )
 
     print(f"\nGetting a list of teams in the MLB API for the {season} season.")
     teams_df = get_milb_team_list(season=season, save=False)
@@ -489,9 +531,12 @@ def get_milb_player_season_stats(
     for team_id in tqdm(team_id_arr):
         try:
             game_df = get_milb_player_team_season_stats(
-                season=season, level=level, team_id=team_id, stats_type=stats_type
+                season=season,
+                level=level,
+                team_id=team_id,
+                stats_type=stats_type
             )
-        except:
+        except Exception:
             print(f"\nCould not get player season stats for team ID {team_id}")
             game_df = pd.DataFrame()
 
@@ -503,14 +548,16 @@ def get_milb_player_season_stats(
         # )
         season_df = pd.concat([season_df, game_df], ignore_index=True)
 
-    if save == True and stats_type == "batting":
+    if save is True and stats_type == "batting":
         season_df.to_csv(
-            f"season_stats/player/{season}_{level.lower()}_season_batting_stats.csv",
+            f"season_stats/player/{season}_{level.lower()}" +
+            "_season_batting_stats.csv",
             index=False,
         )
-    elif save == True and stats_type == "pitching":
+    elif save is True and stats_type == "pitching":
         season_df.to_csv(
-            f"season_stats/player/{season}_{level.lower()}_season_pitching_stats.csv",
+            f"season_stats/player/{season}_{level.lower()}" +
+            "_season_pitching_stats.csv",
             index=False,
         )
 
@@ -533,7 +580,9 @@ if __name__ == "__main__":
         "--end_season",
         type=int,
         required=False,
-        help="Optional argument. If you want to download data from a range of seasons, set `--end_season` to the final season you want stats from.",
+        help="Optional argument. " +
+        "If you want to download data from a range of seasons, " +
+        "set `--end_season` to the final season you want stats from.",
     )
 
     parser.add_argument(
@@ -547,7 +596,8 @@ if __name__ == "__main__":
         "--stat_type",
         type=str,
         required=True,
-        help="The type of stats you want to download. Valid arguments are `batting` or `pitching`.",
+        help="The type of stats you want to download. " +
+        "Valid arguments are `batting` or `pitching`.",
     )
 
     args = parser.parse_args()
@@ -558,11 +608,15 @@ if __name__ == "__main__":
     stats_type = args.stat_type
 
     if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
-        raise ValueError(f'`--stats_type` must be set to "batting" or "pitching".')
+        raise ValueError(
+            '`--stats_type` must be set to "batting" or "pitching".'
+        )
 
-    if end_season != None:
+    if end_season is not None:
         if season > end_season:
-            raise ValueError("`--season` cannot be greater than `--end_season`.")
+            raise ValueError(
+                "`--season` cannot be greater than `--end_season`."
+            )
             season += 1
         elif season == end_season:
             raise ValueError("`--end_season` cannot be equal to `--season`.")
