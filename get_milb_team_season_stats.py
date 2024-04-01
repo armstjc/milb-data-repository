@@ -92,11 +92,15 @@ def get_milb_team_season_stats(
             return pd.DataFrame()
 
         # # if len(json_data["stats"]) == 0:
-        if "stats" in json_data:
-            # If true, we don't have data.
+        if json_data["stats"] is None:
             print(f"\nNo stats found in the {season} season.")
             return pd.DataFrame()
-
+        elif "stats" in json_data:
+            pass
+        else:
+            print(f"\nNo stats found in the {season} season.")
+            return pd.DataFrame()
+        
         for i in json_data["stats"]:
             row_df = pd.DataFrame({"season": season}, index=[0])
             row_df["level_abv"] = level_abv
@@ -258,10 +262,19 @@ def get_milb_team_season_stats(
             return pd.DataFrame()
 
         # if len(json_data["stats"]) == 0:
-        if "stats" in json_data:
-            # If true, we don't have data.
+        if json_data["stats"] is None:
             print(f"\nNo stats found in the {season} season.")
             return pd.DataFrame()
+        elif "stats" in json_data:
+            pass
+        else:
+            print(f"\nNo stats found in the {season} season.")
+            return pd.DataFrame()
+
+        # if "stats" in json_data:
+        # if json_data.has_key("stats"):
+        #     print("hecker")
+
 
         for i in json_data["stats"]:
             row_df = pd.DataFrame({"season": season}, index=[0])
