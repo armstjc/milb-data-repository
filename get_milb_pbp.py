@@ -1105,8 +1105,7 @@ if __name__ == "__main__":
         start_month = now.month + 3
         end_month = now.month + 4
         season -= 1
-    elif season == now.year \
-            and now.day <= 7 and platform.system() == "Windows":
+    elif season == now.year and now.day <= 5:
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
@@ -1124,21 +1123,21 @@ if __name__ == "__main__":
 
 
     for i in range(start_month, end_month):
-        # if platform.system() == "Windows":
-        #     print(
-        #         f"Getting {i}/{season} PBP data " +
-        #         f"in the {lg_level} level of MiLB."
-        #     )
-        #     get_month_milb_pbp(
-        #         season, i, level=lg_level, cache_data=True, cache_dir=c_dir
-        #     )
-        # else:
-        #     print(
-        #         f"Getting {i}/{season} PBP data " +
-        #         f"in the {lg_level} level of MiLB."
-        #     )
-        #     get_month_milb_pbp(season, i, level=lg_level)
-        get_month_milb_pbp(season, i, level=lg_level)
+        if platform.system() == "Windows":
+            print(
+                f"Getting {i}/{season} PBP data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            get_month_milb_pbp(
+                season, i, level=lg_level, cache_data=True, cache_dir=c_dir
+            )
+        else:
+            print(
+                f"Getting {i}/{season} PBP data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            get_month_milb_pbp(season, i, level=lg_level)
+        # get_month_milb_pbp(season, i, level=lg_level)
 
     # for i in range(start_month, end_month):
     #     get_month_milb_pbp(

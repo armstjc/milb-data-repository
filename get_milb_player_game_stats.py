@@ -690,8 +690,7 @@ if __name__ == "__main__":
         start_month = now.month + 3
         end_month = now.month + 4
         season -= 1
-    elif season == now.year and now.day <= 5 \
-            and platform.system() == "Windows":
+    elif season == now.year and now.day <= 5:
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
