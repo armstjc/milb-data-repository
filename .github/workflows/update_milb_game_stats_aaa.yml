@@ -2,8 +2,8 @@ name: Update MiLB Player Game Stats - AAA
 on:
   schedule:
     - cron: "30 5 * 4-10 *"
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   # pull_request:
   #   branches: [main]
 

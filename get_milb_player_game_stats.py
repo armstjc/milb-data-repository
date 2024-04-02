@@ -9,7 +9,7 @@ from urllib.request import urlopen
 import pandas as pd
 from tqdm import tqdm
 
-from get_milb_schedule import get_milb_schedule
+from get_milb_schedule import load_milb_schedule
 
 
 def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
@@ -588,37 +588,37 @@ def get_month_milb_player_game_stats(
         or (level.lower() == "triple-a")
         or (level.lower() == "triple a")
     ):
-        sched_df = get_milb_schedule(season, "AAA")
+        sched_df = load_milb_schedule(season, "AAA")
     elif (
         (level.lower() == "aa")
         or (level.lower() == "double-a")
         or (level.lower() == "double a")
     ):
-        sched_df = get_milb_schedule(season, "AA")
+        sched_df = load_milb_schedule(season, "AA")
     elif (
         (level.lower() == "a+")
         or (level.lower() == "high-a")
         or (level.lower() == "high a")
     ):
-        sched_df = get_milb_schedule(season, "A+")
+        sched_df = load_milb_schedule(season, "A+")
     elif (
         (level.lower() == "a")
         or (level.lower() == "single-a")
         or (level.lower() == "single-a")
     ):
-        sched_df = get_milb_schedule(season, "A")
+        sched_df = load_milb_schedule(season, "A")
     elif (
         (level.lower() == "a-")
         or (level.lower() == "short-a")
         or (level.lower() == "short a")
     ):
-        sched_df = get_milb_schedule(season, "A-")
+        sched_df = load_milb_schedule(season, "A-")
     elif (
         (level.lower() == "rk")
         or (level.lower() == "rok")
         or (level.lower() == "rookie")
     ):
-        sched_df = get_milb_schedule(season, "rk")
+        sched_df = load_milb_schedule(season, "rk")
 
     sched_df = sched_df.loc[sched_df["status_abstract_game_state"] == "Final"]
     sched_df = sched_df.loc[
@@ -628,7 +628,7 @@ def get_month_milb_player_game_stats(
         & (sched_df["status_detailed_state"] != "In Progress")
         & (sched_df["status_detailed_state"] != "Scheduled")
     ]
-
+    print(sched_df)
     game_ids_arr = sched_df["game_pk"].to_numpy()
 
     if len(game_ids_arr) > 30 and cache_data is False:
@@ -719,3 +719,4 @@ if __name__ == "__main__":
                 f"in the {lg_level} level of MiLB."
             )
             get_month_milb_player_game_stats(season, i, level=lg_level)
+        # get_month_milb_player_game_stats(season, i, level=lg_level)

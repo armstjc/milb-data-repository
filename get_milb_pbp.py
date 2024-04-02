@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from get_milb_schedule import get_milb_schedule
+from get_milb_schedule import load_milb_schedule
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -984,7 +984,7 @@ def get_month_milb_pbp(
         or (level.lower() == "triple-a")
         or (level.lower() == "triple a")
     ):
-        sched_df = get_milb_schedule(season, "AAA")
+        sched_df = load_milb_schedule(season, "AAA")
     elif (
         (level.lower() == "aa")
         or (level.lower() == "double-a")
@@ -996,7 +996,7 @@ def get_month_milb_pbp(
                 f"releases/download/schedule/{season}_aa_schedule.csv"
             )
         else:
-            sched_df = get_milb_schedule(season, "AA")
+            sched_df = load_milb_schedule(season, "AA")
     elif (
         (level.lower() == "a+")
         or (level.lower() == "high-a")
@@ -1008,7 +1008,7 @@ def get_month_milb_pbp(
                 f"releases/download/schedule/{season}_a+_schedule.csv"
             )
         else:
-            sched_df = get_milb_schedule(season, "A+")
+            sched_df = load_milb_schedule(season, "A+")
     elif (
         (level.lower() == "a")
         or (level.lower() == "single-a")
@@ -1020,19 +1020,19 @@ def get_month_milb_pbp(
                 f"releases/download/schedule/{season}_a_schedule.csv"
             )
         else:
-            sched_df = get_milb_schedule(season, "A")
+            sched_df = load_milb_schedule(season, "A")
     elif (
         (level.lower() == "a-")
         or (level.lower() == "short-a")
         or (level.lower() == "short a")
     ):
-        sched_df = get_milb_schedule(season, "A-")
+        sched_df = load_milb_schedule(season, "A-")
     elif (
         (level.lower() == "rk")
         or (level.lower() == "rok")
         or (level.lower() == "rookie")
     ):
-        sched_df = get_milb_schedule(season, "rk")
+        sched_df = load_milb_schedule(season, "rk")
 
     sched_df = sched_df.loc[sched_df["status_abstract_game_state"] == "Final"]
     sched_df = sched_df.loc[

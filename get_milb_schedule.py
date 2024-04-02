@@ -916,6 +916,71 @@ def get_milb_schedule(
     return schedule_df
 
 
+def load_milb_schedule(
+    season: int, level="AAA", cache_data=False, cache_dir=""
+):
+    """
+    Loads a pre-compiled a list of MiLB games that happened between two dates.
+
+    Parameters
+    ----------
+    `season` (int, mandatory):
+        The season you want MiLB schedule info from.
+
+    `level` (str, semi-optional) = `AAA`:
+        The MiLB level you want schedule info from.
+        The following inputs work for each level, regardless of case:
+        - All Levels = 'all'
+        - AAA = 'triple-a', 'triple a', 'aaa'
+        - AA = 'double-a', 'double a', 'aa'
+        - A, A+, A- = 'single-a', 'single a', 'a'
+        - Rookie ball (any league) = 'rk', 'rok', 'rookie'
+
+    """
+
+    if level.lower() == "a" and season == 2010:
+        df = get_alt_schedule(2010)
+        return df
+    if level.lower() == "a" and season == 2013:
+        df = get_alt_schedule(2013)
+        return df
+    elif level.lower() == "a" and season == 2014:
+        df = get_alt_schedule(2014)
+        return df
+    elif level.lower() == "a+" and season == 2011:
+        df = get_alt_schedule(2011, "a+")
+        return df
+    elif level.lower() == "aa" and season == 2010:
+        df = get_alt_schedule(2010, "aa")
+        return df
+
+    if level.lower() == "aaa":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_aaa_schedule.csv"
+        df = pd.read_csv(url)
+        return df
+    elif level.lower() == "aa":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_aa_schedule.csv"
+        df = pd.read_csv(url)
+        return df
+    elif level.lower() == "a+":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_a+_schedule.csv"
+        df = pd.read_csv(url)
+        return df
+    elif level.lower() == "a":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_a_schedule.csv"
+        df = pd.read_csv(url)
+        return df
+    elif level.lower() == "rk":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_rookie_schedule.csv"
+        df = pd.read_csv(url)
+        return df
+
+
 if __name__ == "__main__":
     now = datetime.now()
     for season in range(now.year - 1, now.year + 1):
