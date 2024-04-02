@@ -1036,13 +1036,14 @@ def get_month_milb_pbp(
 
     print(sched_df)
     sched_df = sched_df.loc[sched_df["status_abstract_game_state"] == "Final"]
-    sched_df = sched_df.loc[
-        (sched_df["game_month"] == month)
-        & (sched_df["status_detailed_state"] != "Cancelled")
-        & (sched_df["status_detailed_state"] != "Postponed")
-        & (sched_df["status_detailed_state"] != "In Progress")
-        & (sched_df["status_detailed_state"] != "Scheduled")
-    ]
+    sched_df = sched_df.loc[sched_df["game_month"] == month]
+    # sched_df = sched_df.loc[
+    #     (sched_df["game_month"] == month)
+    #     & (sched_df["status_detailed_state"] != "Cancelled")
+    #     & (sched_df["status_detailed_state"] != "Postponed")
+    #     & (sched_df["status_detailed_state"] != "In Progress")
+    #     & (sched_df["status_detailed_state"] != "Scheduled")
+    # ]
     print(sched_df)
 
     game_ids_arr = sched_df["game_pk"].to_numpy()
