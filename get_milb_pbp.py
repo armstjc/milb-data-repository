@@ -1034,6 +1034,7 @@ def get_month_milb_pbp(
     ):
         sched_df = load_milb_schedule(season, "rk")
 
+    print(sched_df)
     sched_df = sched_df.loc[sched_df["status_abstract_game_state"] == "Final"]
     sched_df = sched_df.loc[
         (sched_df["game_month"] == month)
@@ -1042,6 +1043,7 @@ def get_month_milb_pbp(
         & (sched_df["status_detailed_state"] != "In Progress")
         & (sched_df["status_detailed_state"] != "Scheduled")
     ]
+    print(sched_df)
 
     game_ids_arr = sched_df["game_pk"].to_numpy()
 
@@ -1098,7 +1100,7 @@ if __name__ == "__main__":
         end_month = now.month + 4
         season -= 1
     elif season == now.year \
-            and now.day <= 2 and platform.system() == "Windows":
+            and now.day <= 7 and platform.system() == "Windows":
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
