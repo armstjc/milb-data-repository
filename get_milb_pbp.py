@@ -1035,8 +1035,8 @@ def get_month_milb_pbp(
         sched_df = load_milb_schedule(season, "rk")
 
     print(sched_df)
-    sched_df = sched_df.loc[sched_df["status_abstract_game_state"] == "Final"]
-    sched_df = sched_df.loc[sched_df["game_month"] == month]
+    sched_df = sched_df[sched_df["status_abstract_game_state"] == "Final"]
+    sched_df = sched_df[sched_df["game_month"] == month]
     # sched_df = sched_df.loc[
     #     (sched_df["game_month"] == month)
     #     & (sched_df["status_detailed_state"] != "Cancelled")
@@ -1117,21 +1117,23 @@ if __name__ == "__main__":
 
     lg_level = args.level
 
+
     for i in range(start_month, end_month):
-        if platform.system() == "Windows":
-            print(
-                f"Getting {i}/{season} PBP data " +
-                f"in the {lg_level} level of MiLB."
-            )
-            get_month_milb_pbp(
-                season, i, level=lg_level, cache_data=True, cache_dir=c_dir
-            )
-        else:
-            print(
-                f"Getting {i}/{season} PBP data " +
-                f"in the {lg_level} level of MiLB."
-            )
-            get_month_milb_pbp(season, i, level=lg_level)
+        # if platform.system() == "Windows":
+        #     print(
+        #         f"Getting {i}/{season} PBP data " +
+        #         f"in the {lg_level} level of MiLB."
+        #     )
+        #     get_month_milb_pbp(
+        #         season, i, level=lg_level, cache_data=True, cache_dir=c_dir
+        #     )
+        # else:
+        #     print(
+        #         f"Getting {i}/{season} PBP data " +
+        #         f"in the {lg_level} level of MiLB."
+        #     )
+        #     get_month_milb_pbp(season, i, level=lg_level)
+        get_month_milb_pbp(season, i, level=lg_level)
 
     # for i in range(start_month, end_month):
     #     get_month_milb_pbp(
