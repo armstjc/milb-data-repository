@@ -1035,8 +1035,10 @@ def get_month_milb_pbp(
         sched_df = load_milb_schedule(season, "rk")
 
     print(sched_df)
-    sched_df = sched_df[sched_df["status_abstract_game_state"] == "Final"]
+    
     sched_df = sched_df[sched_df["game_month"] == month]
+    print(sched_df)
+    sched_df = sched_df[sched_df["status_abstract_game_state"] == "Final"]
     # sched_df = sched_df.loc[
     #     (sched_df["game_month"] == month)
     #     & (sched_df["status_detailed_state"] != "Cancelled")
