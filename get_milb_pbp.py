@@ -937,7 +937,7 @@ def get_milb_game_pbp(game_id: int, cache_data=False, cache_dir=""):
                     fielder_9,
                 )
 
-                game_df.fillna(value=np.NaN, inplace=True)
+                game_df.fillna(value=np.nan, inplace=True)
                 game_df = pd.concat([game_df, play_df], ignore_index=True)
 
             del is_pitch
@@ -1035,7 +1035,7 @@ def get_month_milb_pbp(
         sched_df = load_milb_schedule(season, "rk")
 
     print(sched_df)
-    
+
     sched_df = sched_df[sched_df["game_month"] == month]
     print(sched_df)
     arr_check = sched_df["status_abstract_game_state"].to_numpy()
@@ -1121,7 +1121,6 @@ if __name__ == "__main__":
 
     lg_level = args.level
 
-
     for i in range(start_month, end_month):
         if platform.system() == "Windows":
             print(
@@ -1141,7 +1140,7 @@ if __name__ == "__main__":
 
     # for i in range(start_month, end_month):
     #     get_month_milb_pbp(
-    #         2009,
+    #         2024,
     #         i,
     #         level="aaa",
     #         cache_data=True,
