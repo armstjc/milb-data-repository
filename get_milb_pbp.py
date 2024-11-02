@@ -2,12 +2,13 @@ import argparse
 import json
 import os
 import platform
+import random
 import time
+import warnings
 from datetime import datetime
 from urllib.request import urlopen
-import warnings
-import numpy as np
 
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
@@ -1033,14 +1034,25 @@ def get_month_milb_pbp(
         or (level.lower() == "rookie")
     ):
         sched_df = load_milb_schedule(season, "rk")
+    elif (
+        (level.lower() == "win")
+        or (level.lower() == "winter")
+    ):
+        sched_df = load_milb_schedule(season, "win")
 
-    print(sched_df)
+    # print(sched_df)
 
     sched_df = sched_df[sched_df["game_month"] == month]
     print(sched_df)
+    try:
+        game_years_arr = sched_df["game_year"].to_list()
+        game_year = game_years_arr[0]
+    except Exception:
+        game_year = season
+
     arr_check = sched_df["status_abstract_game_state"].to_numpy()
     arr_check = np.unique(arr_check)
-    print(arr_check)
+    # print(arr_check)
     sched_df = sched_df[sched_df["status_abstract_game_state"] == "Final"]
     # sched_df = sched_df.loc[
     #     (sched_df["game_month"] == month)
@@ -1074,7 +1086,7 @@ def get_month_milb_pbp(
 
     if save is True and len(pbp_df) > 0:
         pbp_df.to_csv(
-            f"pbp/{season}_{month}_{level.lower()}_pbp.csv",
+            f"pbp/{game_year}_{month}_{level.lower()}_pbp.csv",
             index=False
         )
 
@@ -1098,14 +1110,15 @@ if __name__ == "__main__":
 
     season = args.season
 
-    if season == now.year and now.month >= 11:
-        start_month = now.month - 5
-        end_month = now.month - 4
-    elif season == now.year and now.month <= 3:
-        start_month = now.month + 3
-        end_month = now.month + 4
-        season -= 1
-    elif season == now.year and now.day <= 5:
+    # if season == now.year and now.month >= 11:
+    #     start_month = now.month - 5
+    #     end_month = now.month - 4
+    # elif season == now.year and now.month <= 3:
+    #     start_month = now.month + 3
+    #     end_month = now.month + 4
+    #     season -= 1
+    # el
+    if season == now.year and now.day <= 5:
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
@@ -1115,9 +1128,9 @@ if __name__ == "__main__":
         start_month = now.month - 1
         end_month = now.month + 1
 
-    elif season == now.year:
-        start_month = now.month
-        end_month = now.month + 1
+    # elif season == now.year:
+    #     start_month = now.month
+    #     end_month = now.month + 1
 
     lg_level = args.level
 
@@ -1127,7 +1140,7 @@ if __name__ == "__main__":
                 f"Getting {i}/{season} PBP data " +
                 f"in the {lg_level} level of MiLB."
             )
-            get_month_milb_pbp(
+            df = get_month_milb_pbp(
                 season, i, level=lg_level, cache_data=True, cache_dir=c_dir
             )
         else:
@@ -1135,9 +1148,41 @@ if __name__ == "__main__":
                 f"Getting {i}/{season} PBP data " +
                 f"in the {lg_level} level of MiLB."
             )
-            get_month_milb_pbp(season, i, level=lg_level)
+            df = get_month_milb_pbp(season, i, level=lg_level)
         # get_month_milb_pbp(season, i, level=lg_level)
 
+    if len(df) == 0:
+        season -= random.randint(1, 10)
+        schedule_df = load_milb_schedule(
+            season=season,
+            level=lg_level
+        )
+        random_int = random.randint(0, len(schedule_df))
+        game_date = schedule_df["official_date"].iloc[random_int]
+        game_month = int(game_date.split("-")[1])
+
+        if platform.system() == "Windows":
+            print(
+                f"Getting {game_month}/{season} PBP data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            df = get_month_milb_pbp(
+                season,
+                game_month,
+                level=lg_level,
+                cache_data=True,
+                cache_dir=c_dir
+            )
+        else:
+            print(
+                f"Getting {game_month}/{season} PBP data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            df = get_month_milb_pbp(
+                season,
+                game_month,
+                level=lg_level
+            )
     # for i in range(start_month, end_month):
     #     get_month_milb_pbp(
     #         2024,

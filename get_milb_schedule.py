@@ -548,7 +548,7 @@ def get_milb_schedule(
         if level.lower() == "all":
             url = "https://statsapi.mlb.com/api/v1/schedule" +\
                 "?lang=en&sportId=11&sportID=12&sportID=13&sportID=14" +\
-                "&sportID=15&sportID=16&hydrate=team(venue(timezone))," +\
+                "&sportID=15&sportID=16&sportID=17&hydrate=team(venue(timezone))," +\
                 "venue(timezone),game(seriesStatus,seriesSummary,tickets," +\
                 "promotions,sponsorships,content(summary,media(epg)))," +\
                 f"seriesStatus,seriesSummary,linescore&season={season}" +\
@@ -616,6 +616,16 @@ def get_milb_schedule(
         ):
             url = "https://statsapi.mlb.com/api/v1/schedule" +\
                 "?lang=en&sportId=16&hydrate=team(venue(timezone))," +\
+                "venue(timezone),game(seriesStatus,seriesSummary,tickets," +\
+                "promotions,sponsorships,content(summary,media(epg)))," +\
+                f"seriesStatus,seriesSummary,linescore&season={season}" +\
+                "&eventTypes=primary&scheduleTypes=games,events,xref"
+        elif (
+            (level.lower() == "win")
+            or (level.lower() == "winter")
+        ):
+            url = "https://statsapi.mlb.com/api/v1/schedule" +\
+                "?lang=en&sportId=17&hydrate=team(venue(timezone))," +\
                 "venue(timezone),game(seriesStatus,seriesSummary,tickets," +\
                 "promotions,sponsorships,content(summary,media(epg)))," +\
                 f"seriesStatus,seriesSummary,linescore&season={season}" +\
@@ -979,6 +989,11 @@ def load_milb_schedule(
             f"download/schedule/{season}_rookie_schedule.csv"
         df = pd.read_csv(url)
         return df
+    elif level.lower() == "win":
+        url = "https://github.com/armstjc/milb-data-repository/releases/" +\
+            f"download/schedule/{season}_winter_schedule.csv"
+        df = pd.read_csv(url)
+        return df
 
 
 if __name__ == "__main__":
@@ -1073,6 +1088,23 @@ if __name__ == "__main__":
         except Exception as e:
             print(
                 f"Could not download {season} Rookie Ball schedules." +
+                f"\nReason:\n{e}"
+            )
+
+        try:
+            print(f"Getting {season} winter league schedules.")
+            rookie_df = get_milb_schedule(season, "winter")
+            if len(rookie_df) > 0:
+                rookie_df.to_csv(
+                    f"schedule/{season}_winter_schedule.csv",
+                    index=False
+                )
+
+            del rookie_df
+
+        except Exception as e:
+            print(
+                f"Could not download {season} winter league schedules." +
                 f"\nReason:\n{e}"
             )
 

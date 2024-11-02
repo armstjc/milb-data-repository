@@ -42,9 +42,13 @@ def get_milb_player_team_season_stats(
     elif level.lower() == "rk":
         level_id = 16
         level_abv = "RK"
+    elif level.lower() == "win":
+        level_id = 17
+        level_abv = "WIN"
     else:
         raise ValueError(
-            '\n`level` must be set to "AAA", "AA", "A+", "A", "A-", or "RK".'
+            '\n`level` must be set to "AAA", "AA", "A+", ' +
+            '"A", "A-", "RK", or "WIN".'
         )
 
     if stats_type.lower() != "batting" and stats_type.lower() != "pitching":
@@ -508,9 +512,12 @@ def get_milb_player_season_stats(
         level_id = 15
     elif level.lower() == "rk":
         level_id = 16
+    elif level.lower() == "win":
+        level_id = 17
     else:
         raise ValueError(
-            '`level` must be set to "AAA", "AA", "A+", "A", "A-", or "RK".'
+            '`level` must be set to "AAA", "AA", ' +
+            '"A+", "A", "A-", "RK", or "WIN".'
         )
 
     if stats_type.lower() != "batting" and stats_type.lower() != "pitching":

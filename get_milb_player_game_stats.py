@@ -619,8 +619,13 @@ def get_month_milb_player_game_stats(
         or (level.lower() == "rookie")
     ):
         sched_df = load_milb_schedule(season, "rk")
+    elif (
+        (level.lower() == "win")
+        or (level.lower() == "winter")
+    ):
+        sched_df = load_milb_schedule(season, "win")
 
-    print(sched_df)
+    # print(sched_df)
     sched_df = sched_df[sched_df["status_abstract_game_state"] == "Final"]
     sched_df = sched_df[sched_df["game_month"] == month]
     # sched_df = sched_df.loc[
@@ -632,6 +637,12 @@ def get_month_milb_player_game_stats(
     # ]
     print(sched_df)
     game_ids_arr = sched_df["game_pk"].to_numpy()
+    # game_years_arr = sched_df["game_year"].to_numpy()
+    try:
+        game_years_arr = sched_df["game_year"].to_list()
+        game_year = game_years_arr[0]
+    except Exception:
+        game_year = season
 
     if len(game_ids_arr) > 30 and cache_data is False:
         print(
@@ -640,7 +651,10 @@ def get_month_milb_player_game_stats(
             "to avoid severe data loss!"
         )
 
-    for game_id in tqdm(game_ids_arr):
+    # for game_id in tqdm(game_ids_arr):
+    for i in tqdm(range(0, len(game_ids_arr))):
+        game_id = game_ids_arr[i]
+
         try:
             game_df = get_milb_player_game_stats(
                 game_id=game_id, cache_data=cache_data, cache_dir=cache_dir
@@ -655,7 +669,7 @@ def get_month_milb_player_game_stats(
 
     if save is True and len(stats_df) > 0:
         stats_df.to_csv(
-            f"game_stats/player/{season}_{month}_{level.lower()}" +
+            f"game_stats/player/{game_year}_{month}_{level.lower()}" +
             "_player_game_stats.csv",
             index=False,
         )
@@ -721,3 +735,7 @@ if __name__ == "__main__":
             )
             get_month_milb_player_game_stats(season, i, level=lg_level)
         # get_month_milb_player_game_stats(season, i, level=lg_level)
+
+    # get_month_milb_player_game_stats(
+    #     2023, 10, level="win", cache_data=True, cache_dir="D:/"
+    # )
