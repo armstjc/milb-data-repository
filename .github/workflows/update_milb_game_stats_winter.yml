@@ -1,4 +1,4 @@
-name: Update MiLB Player Game Stats - Rookie Ball
+name: Update MiLB Player Game Stats - Winter Ball
 on:
   schedule:
     - cron: "31 15 * 10-12,1-3 *"

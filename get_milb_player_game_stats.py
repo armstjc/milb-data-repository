@@ -691,13 +691,23 @@ if __name__ == "__main__":
     parser.add_argument("--season", type=int, required=False)
     parser.add_argument("--level", type=str, required=True)
     args = parser.parse_args()
+    lg_level = args.level
 
     season = args.season
 
     if season is None:
         season == now.year
 
-    if season == now.year and now.month >= 11:
+    if (
+        lg_level == "winter" and
+        (
+            now.month > 9 or
+            now.month < 3
+        )
+    ):
+        start_month = now.month - 2
+        end_month = now.month + 1
+    elif season == now.year and now.month >= 11:
         start_month = now.month - 7
         end_month = now.month - 6
     elif season == (now.year + 1) and now.month <= 3:
@@ -717,7 +727,11 @@ if __name__ == "__main__":
         start_month = now.month
         end_month = now.month + 1
 
-    lg_level = args.level
+    if start_month < 1:
+        start_month = 1
+
+    if end_month > 13:
+        end_month = 13
 
     for i in range(start_month, end_month):
         if platform.system() == "Windows":

@@ -1,4 +1,4 @@
-name: Update MiLB PBP - Rookie Ball
+name: Update MiLB PBP - Winter Ball
 on:
   schedule:
     # - cron: "0 9 * 5-9 *"
