@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import platform
+import random
 import time
 from datetime import datetime
 from urllib.request import urlopen
@@ -79,7 +80,7 @@ def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
 
             json_data = json.loads(json_string)
         except Exception:
-            response = urlopen(game_url)
+            response = urlopen(game_url, timeout=30)
             time.sleep(1)
 
             if response.code == 200:
@@ -687,14 +688,15 @@ if __name__ == "__main__":
     # for this level is downloaded.
     end_month = 13
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--season", type=int, required=False)
-    parser.add_argument("--level", type=str, required=True)
-    args = parser.parse_args()
-    lg_level = args.level
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--season", type=int, required=False)
+    # parser.add_argument("--level", type=str, required=True)
+    # args = parser.parse_args()
 
-    season = args.season
-
+    # lg_level = args.level
+    # season = args.season
+    lg_level = "winter"
+    season = 2024
     if season is None:
         season == now.year
 
@@ -739,7 +741,7 @@ if __name__ == "__main__":
                 f"Getting {i}/{season} player game stats data " +
                 f"in the {lg_level} level of MiLB."
             )
-            get_month_milb_player_game_stats(
+            df = get_month_milb_player_game_stats(
                 season, i, level=lg_level, cache_data=True, cache_dir=c_dir
             )
         else:
@@ -747,8 +749,33 @@ if __name__ == "__main__":
                 f"Getting {i}/{season} player game stats data " +
                 f"in the {lg_level} level of MiLB."
             )
-            get_month_milb_player_game_stats(season, i, level=lg_level)
+            df = get_month_milb_player_game_stats(season, i, level=lg_level)
         # get_month_milb_player_game_stats(season, i, level=lg_level)
+
+    if len(df) == 0:
+        season -= random.randint(1, 10)
+        schedule_df = load_milb_schedule(
+            season=season,
+            level=lg_level
+        )
+        random_int = random.randint(0, len(schedule_df))
+        game_date = schedule_df["official_date"].iloc[random_int]
+        game_month = int(game_date.split("-")[1])
+
+        if platform.system() == "Windows":
+            print(
+                f"Getting {i}/{season} player game stats data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            df = get_month_milb_player_game_stats(
+                season, i, level=lg_level, cache_data=True, cache_dir=c_dir
+            )
+        else:
+            print(
+                f"Getting {i}/{season} player game stats data " +
+                f"in the {lg_level} level of MiLB."
+            )
+            df = get_month_milb_player_game_stats(season, i, level=lg_level)
 
     # get_month_milb_player_game_stats(
     #     2023, 10, level="win", cache_data=True, cache_dir="D:/"

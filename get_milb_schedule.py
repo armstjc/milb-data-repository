@@ -989,7 +989,7 @@ def load_milb_schedule(
             f"download/schedule/{season}_rookie_schedule.csv"
         df = pd.read_csv(url)
         return df
-    elif level.lower() == "win":
+    elif (level.lower() == "win" or level.lower() == "winter"):
         url = "https://github.com/armstjc/milb-data-repository/releases/" +\
             f"download/schedule/{season}_winter_schedule.csv"
         df = pd.read_csv(url)
