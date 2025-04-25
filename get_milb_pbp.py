@@ -1102,13 +1102,14 @@ if __name__ == "__main__":
     # This is to ensure that any game played in December
     # for this level is downloaded.
     end_month = 13
+    # lg_level = ""
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--season", type=int, required=True)
-    parser.add_argument("--level", type=str, required=True)
+    # parser.add_argument("--season", type=int, required=True)
+    # parser.add_argument("--level", type=str, required=True)
     args = parser.parse_args()
 
-    season = args.season
+    season = now.year
 
     # if season == now.year and now.month >= 11:
     #     start_month = now.month - 5
@@ -1118,7 +1119,10 @@ if __name__ == "__main__":
     #     end_month = now.month + 4
     #     season -= 1
     # el
-    if season == now.year and now.day <= 5:
+    if season == now.year and now.day <= 5 and (
+        now.month >= 3 and
+        now.month <= 10
+    ):
         # This is here to ensure that a game being played
         # in between 2 months
         # (like a game starting on March 31st but ending on April 1st)
@@ -1127,13 +1131,18 @@ if __name__ == "__main__":
         # to make sure nothing is skipped.
         start_month = now.month - 1
         end_month = now.month + 1
-
+    elif season == now.year and (
+        now.month >= 3 and
+        now.month <= 10
+    ):
+        start_month = now.month
+        end_month = now.month + 1
     # elif season == now.year:
     #     start_month = now.month
     #     end_month = now.month + 1
 
     lg_level = args.level
-
+    # lg_level = "AAA"
     for i in range(start_month, end_month):
         if platform.system() == "Windows":
             print(

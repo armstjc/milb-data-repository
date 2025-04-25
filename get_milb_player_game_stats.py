@@ -688,15 +688,15 @@ if __name__ == "__main__":
     # for this level is downloaded.
     end_month = 13
 
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--season", type=int, required=False)
-    # parser.add_argument("--level", type=str, required=True)
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--season", type=int, required=False)
+    parser.add_argument("--level", type=str, required=True)
+    args = parser.parse_args()
 
-    # lg_level = args.level
-    # season = args.season
-    lg_level = "winter"
-    season = 2024
+    lg_level = args.level
+    season = args.season
+    # lg_level = "winter"
+    # season = 2024
     if season is None:
         season == now.year
 
