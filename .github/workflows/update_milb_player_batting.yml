@@ -33,11 +33,11 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_player_season_stats.py --season 2024 --level aaa --stat_type batting
-          python get_milb_player_season_stats.py --season 2024 --level aa --stat_type batting
-          python get_milb_player_season_stats.py --season 2024 --level a+ --stat_type batting
-          python get_milb_player_season_stats.py --season 2024 --level a --stat_type batting
-          python get_milb_player_season_stats.py --season 2024 --level rk --stat_type batting
+          python get_milb_player_season_stats.py --season 2025 --level aaa --stat_type batting
+          python get_milb_player_season_stats.py --season 2025 --level aa --stat_type batting
+          python get_milb_player_season_stats.py --season 2025 --level a+ --stat_type batting
+          python get_milb_player_season_stats.py --season 2025 --level a --stat_type batting
+          python get_milb_player_season_stats.py --season 2025 --level rk --stat_type batting
 
       - uses: xresloader/upload-to-github-release@main
         env:

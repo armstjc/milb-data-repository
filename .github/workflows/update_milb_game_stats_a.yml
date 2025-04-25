@@ -33,7 +33,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: run Python Script
         run: |
-          python get_milb_player_game_stats.py --season 2024 --level a
+          python get_milb_player_game_stats.py --season 2025 --level a
 
       - uses: xresloader/upload-to-github-release@main
         env:
