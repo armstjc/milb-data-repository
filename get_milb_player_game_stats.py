@@ -13,7 +13,11 @@ from tqdm import tqdm
 from get_milb_schedule import load_milb_schedule
 
 
-def get_milb_player_game_stats(game_id: int, cache_data=False, cache_dir=""):
+def get_milb_player_game_stats(
+    game_id: int,
+    cache_data=False,
+    cache_dir=""
+):
     """
     Retrieves and parses the player game box score stats from a valid
     MiLB game ID.
