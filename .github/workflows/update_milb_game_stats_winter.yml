@@ -2,10 +2,10 @@ name: Update MiLB Player Game Stats - Winter Ball
 on:
   schedule:
     - cron: "31 15 * 10-12,1-3 *"
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
